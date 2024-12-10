@@ -10,10 +10,13 @@ import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
 import net.hwyz.iov.cloud.framework.security.annotation.RequiresPermissions;
 import net.hwyz.iov.cloud.framework.security.util.SecurityUtils;
+import net.hwyz.iov.cloud.otd.wms.api.contract.StorageAreaMpt;
 import net.hwyz.iov.cloud.otd.wms.api.contract.WarehouseMpt;
 import net.hwyz.iov.cloud.otd.wms.api.feign.mpt.WarehouseMptApi;
 import net.hwyz.iov.cloud.otd.wms.service.application.service.WarehouseAppService;
+import net.hwyz.iov.cloud.otd.wms.service.facade.assembler.StorageAreaMptAssembler;
 import net.hwyz.iov.cloud.otd.wms.service.facade.assembler.WarehouseMptAssembler;
+import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.po.StorageAreaPo;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.po.WarehousePo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +52,21 @@ public class WarehouseMptController extends BaseController implements WarehouseM
                 warehouse.getWarehouseLevel(), getBeginTime(warehouse), getEndTime(warehouse));
         List<WarehouseMpt> warehouseMptList = WarehouseMptAssembler.INSTANCE.fromPoList(warehousePoList);
         return getDataTable(warehousePoList, warehouseMptList);
+    }
+
+    /**
+     * 根据仓库ID获取仓库存储区域
+     *
+     * @param warehouseId 仓库ID
+     * @return 仓库存储区域列表
+     */
+    @RequiresPermissions("completeVehicle:warehouse:info:list")
+    @Override
+    @GetMapping(value = "/{warehouseId}/storageArea")
+    public List<StorageAreaMpt> listWarehouseStorageArea(@PathVariable Long warehouseId) {
+        logger.info("管理后台用户[{}]根据仓库ID[{}]获取仓库存储区域", SecurityUtils.getUsername(), warehouseId);
+        List<StorageAreaPo> storageAreaPoList = warehouseAppService.listByWarehouseId(warehouseId);
+        return StorageAreaMptAssembler.INSTANCE.fromPoList(storageAreaPoList);
     }
 
     /**
@@ -101,6 +119,21 @@ public class WarehouseMptController extends BaseController implements WarehouseM
     }
 
     /**
+     * 新增仓库储区
+     *
+     * @param storageArea 仓库储区
+     * @return 结果
+     */
+    @Override
+    @PostMapping("/{warehouseId}/storageArea")
+    public AjaxResult addStorageArea(@PathVariable Long warehouseId, @Validated @RequestBody StorageAreaMpt storageArea) {
+        logger.info("管理后台用户[{}]新增仓库[{}]储区[{}]", SecurityUtils.getUsername(), warehouseId, storageArea.getCode());
+        StorageAreaPo storageAreaPo = StorageAreaMptAssembler.INSTANCE.toPo(storageArea);
+        storageAreaPo.setCreateBy(SecurityUtils.getUserId().toString());
+        return toAjax(warehouseAppService.createWarehouseStorageArea(storageAreaPo));
+    }
+
+    /**
      * 修改保存仓库信息
      *
      * @param warehouse 仓库信息
@@ -121,6 +154,22 @@ public class WarehouseMptController extends BaseController implements WarehouseM
     }
 
     /**
+     * 修改保存仓库储区
+     *
+     * @param storageArea 仓库储区
+     * @return 结果
+     */
+    @Log(title = "仓库管理", businessType = BusinessType.UPDATE)
+    @Override
+    @PutMapping("/{warehouseId}/storageArea")
+    public AjaxResult editStorageArea(@PathVariable Long warehouseId, @Validated @RequestBody StorageAreaMpt storageArea) {
+        logger.info("管理后台用户[{}]修改保存仓库[{}]储区[{}]", SecurityUtils.getUsername(), warehouseId, storageArea.getCode());
+        StorageAreaPo storageAreaPo = StorageAreaMptAssembler.INSTANCE.toPo(storageArea);
+        storageAreaPo.setModifyBy(SecurityUtils.getUserId().toString());
+        return toAjax(warehouseAppService.modifyWarehouseStorageArea(storageAreaPo));
+    }
+
+    /**
      * 删除仓库信息
      *
      * @param warehouseIds 仓库ID数组
@@ -133,5 +182,20 @@ public class WarehouseMptController extends BaseController implements WarehouseM
     public AjaxResult remove(@PathVariable Long[] warehouseIds) {
         logger.info("管理后台用户[{}]删除仓库信息[{}]", SecurityUtils.getUsername(), warehouseIds);
         return toAjax(warehouseAppService.deleteWarehouseByIds(warehouseIds));
+    }
+
+    /**
+     * 删除仓库储区
+     *
+     * @param warehouseId    仓库ID
+     * @param storageAreaIds 仓库储区ID数组
+     * @return 结果
+     */
+    @Log(title = "仓库管理", businessType = BusinessType.DELETE)
+    @Override
+    @DeleteMapping("/{warehouseId}/storageArea/{storageAreaIds}")
+    public AjaxResult remove(@PathVariable Long warehouseId, @PathVariable Long[] storageAreaIds) {
+        logger.info("管理后台用户[{}]删除仓库[{}]储区[{}]", SecurityUtils.getUsername(), warehouseId, storageAreaIds);
+        return toAjax(warehouseAppService.deleteWarehouseStorageAreaByIds(warehouseId, storageAreaIds));
     }
 }

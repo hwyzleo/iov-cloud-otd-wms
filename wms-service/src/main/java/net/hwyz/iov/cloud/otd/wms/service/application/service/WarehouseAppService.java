@@ -4,7 +4,9 @@ import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.hwyz.iov.cloud.framework.common.util.ParamHelper;
+import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.dao.StorageAreaDao;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.dao.WarehouseDao;
+import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.po.StorageAreaPo;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.po.WarehousePo;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import java.util.Map;
 public class WarehouseAppService {
 
     private final WarehouseDao warehouseDao;
+    private final StorageAreaDao storageAreaDao;
 
     /**
      * 查询仓库信息
@@ -43,6 +46,22 @@ public class WarehouseAppService {
         map.put("beginTime", beginTime);
         map.put("endTime", endTime);
         return warehouseDao.selectPoByMap(map);
+    }
+
+    /**
+     * 根据仓库ID查询储区信息
+     *
+     * @param warehouseId 仓库ID
+     * @return 储区列表
+     */
+    public List<StorageAreaPo> listByWarehouseId(Long warehouseId) {
+        WarehousePo warehousePo = getWarehouseById(warehouseId);
+        if (ObjUtil.isNull(warehousePo)) {
+            return null;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("warehouseCode", warehousePo.getCode());
+        return storageAreaDao.selectPoByMap(map);
     }
 
     /**
@@ -91,6 +110,16 @@ public class WarehouseAppService {
     }
 
     /**
+     * 新增仓库储区
+     *
+     * @param storageArea 仓库储区
+     * @return 结果
+     */
+    public int createWarehouseStorageArea(StorageAreaPo storageArea) {
+        return storageAreaDao.insertPo(storageArea);
+    }
+
+    /**
      * 修改仓库
      *
      * @param warehouse 仓库信息
@@ -101,6 +130,16 @@ public class WarehouseAppService {
     }
 
     /**
+     * 修改仓库储区
+     *
+     * @param storageArea 仓库储区
+     * @return 结果
+     */
+    public int modifyWarehouseStorageArea(StorageAreaPo storageArea) {
+        return storageAreaDao.updatePo(storageArea);
+    }
+
+    /**
      * 批量删除仓库
      *
      * @param ids 仓库ID数组
@@ -108,6 +147,21 @@ public class WarehouseAppService {
      */
     public int deleteWarehouseByIds(Long[] ids) {
         return warehouseDao.batchPhysicalDeletePo(ids);
+    }
+
+    /**
+     * 批量删除仓库
+     *
+     * @param warehouseId 仓库ID
+     * @param ids         仓库储区ID数组
+     * @return 结果
+     */
+    public int deleteWarehouseStorageAreaByIds(Long warehouseId, Long[] ids) {
+        WarehousePo warehousePo = getWarehouseById(warehouseId);
+        if (ObjUtil.isNull(warehousePo)) {
+            return 0;
+        }
+        return storageAreaDao.batchPhysicalDeletePo(warehousePo.getCode(), ids);
     }
 
 }
