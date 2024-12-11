@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.hwyz.iov.cloud.framework.common.web.domain.AjaxResult;
 import net.hwyz.iov.cloud.framework.common.web.page.TableDataInfo;
 import net.hwyz.iov.cloud.otd.wms.api.contract.StorageAreaMpt;
+import net.hwyz.iov.cloud.otd.wms.api.contract.StorageLocationMpt;
 import net.hwyz.iov.cloud.otd.wms.api.contract.WarehouseMpt;
 
 import java.util.List;
@@ -30,6 +31,15 @@ public interface WarehouseMptApi {
      * @return 仓库存储区域列表
      */
     List<StorageAreaMpt> listWarehouseStorageArea(Long warehouseId);
+
+    /**
+     * 根据仓库ID和存储区域ID获取仓库储区下的存储位置
+     *
+     * @param warehouseId   仓库ID
+     * @param storageAreaId 储区ID
+     * @return 存位列表
+     */
+    List<StorageLocationMpt> listWarehouseStorageAreaStorageLocation(Long warehouseId, Long storageAreaId);
 
     /**
      * 导出仓库信息
@@ -65,6 +75,16 @@ public interface WarehouseMptApi {
     AjaxResult addStorageArea(Long warehouseId, StorageAreaMpt storageArea);
 
     /**
+     * 新增仓库储位
+     *
+     * @param warehouseId     仓库ID
+     * @param storageAreaId   储区ID
+     * @param storageLocation 仓库储位
+     * @return 结果
+     */
+    AjaxResult addStorageLocation(Long warehouseId, Long storageAreaId, StorageLocationMpt storageLocation);
+
+    /**
      * 修改保存仓库信息
      *
      * @param warehouse 仓库信息
@@ -75,10 +95,21 @@ public interface WarehouseMptApi {
     /**
      * 修改保存仓库储区
      *
+     * @param warehouseId 仓库ID
      * @param storageArea 仓库储区
      * @return 结果
      */
     AjaxResult editStorageArea(Long warehouseId, StorageAreaMpt storageArea);
+
+    /**
+     * 修改保存仓库储位
+     *
+     * @param warehouseId     仓库ID
+     * @param storageAreaId   储区ID
+     * @param storageLocation 仓库储位
+     * @return 结果
+     */
+    AjaxResult editStorageLocation(Long warehouseId, Long storageAreaId, StorageLocationMpt storageLocation);
 
     /**
      * 删除仓库信息
@@ -95,6 +126,16 @@ public interface WarehouseMptApi {
      * @param storageAreaIds 仓库储区ID数组
      * @return 结果
      */
-    AjaxResult remove(Long warehouseId, Long[] storageAreaIds);
+    AjaxResult removeStorageArea(Long warehouseId, Long[] storageAreaIds);
+
+    /**
+     * 删除仓库储位
+     *
+     * @param warehouseId        仓库ID
+     * @param storageAreaId      储区ID
+     * @param storageLocationIds 仓库储位ID数组
+     * @return 结果
+     */
+    AjaxResult removeStorageLocation(Long warehouseId, Long storageAreaId, Long[] storageLocationIds);
 
 }
