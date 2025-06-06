@@ -92,13 +92,13 @@ public class WarehouseMptController extends BaseController implements WarehouseM
      * 导出仓库信息
      *
      * @param response  响应
-     * @param saleModel 仓库信息
+     * @param warehouse 仓库信息
      */
     @Log(title = "仓库管理", businessType = BusinessType.EXPORT)
     @RequiresPermissions("completeVehicle:warehouse:info:export")
     @Override
     @PostMapping("/export")
-    public void export(HttpServletResponse response, WarehouseMpt saleModel) {
+    public void export(HttpServletResponse response, WarehouseMpt warehouse) {
         logger.info("管理后台用户[{}]导出仓库信息", SecurityUtils.getUsername());
     }
 
