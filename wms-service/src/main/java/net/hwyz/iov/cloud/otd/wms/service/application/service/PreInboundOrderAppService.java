@@ -5,8 +5,10 @@ import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.dao.PreInboundOrderDao;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.po.PreInboundOrderPo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,6 +27,12 @@ import java.util.Map;
 public class PreInboundOrderAppService {
 
     private final PreInboundOrderDao preInboundOrderDao;
+
+    /**
+     * 默认的前置仓库代码
+     */
+    @Value("${biz.default-warehouse.pdc}")
+    private String defaultPdcWarehouseCode;
 
     /**
      * 查询预入库单
@@ -92,6 +100,9 @@ public class PreInboundOrderAppService {
      */
     public int createPreInboundOrder(PreInboundOrderPo preInboundOrder) {
         preInboundOrder.setOrderNum(generateOrderNum());
+        if (StrUtil.isBlank(preInboundOrder.getWarehouseCode())) {
+            preInboundOrder.setWarehouseCode(defaultPdcWarehouseCode);
+        }
         return preInboundOrderDao.insertPo(preInboundOrder);
     }
 
