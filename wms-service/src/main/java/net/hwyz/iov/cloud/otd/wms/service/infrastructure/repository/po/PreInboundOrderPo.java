@@ -74,7 +74,7 @@ public class PreInboundOrderPo extends BasePo {
      * 是否已审核
      */
     @TableField("audit")
-    private Byte audit;
+    private Boolean audit;
 
     /**
      * 审核时间
@@ -92,7 +92,7 @@ public class PreInboundOrderPo extends BasePo {
      * 是否已到达
      */
     @TableField("arrival")
-    private Byte arrival;
+    private Boolean arrival;
 
     /**
      * 到达时间
@@ -104,7 +104,7 @@ public class PreInboundOrderPo extends BasePo {
      * 是否已入库
      */
     @TableField("inbound")
-    private Byte inbound;
+    private Boolean inbound;
 
     /**
      * 入库时间

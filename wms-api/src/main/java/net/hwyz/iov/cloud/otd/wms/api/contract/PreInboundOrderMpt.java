@@ -55,7 +55,7 @@ public class PreInboundOrderMpt extends BaseRequest {
     /**
      * 是否已审核
      */
-    private Byte audit;
+    private Boolean audit;
 
     /**
      * 审核时间
@@ -68,9 +68,19 @@ public class PreInboundOrderMpt extends BaseRequest {
     private Long auditBy;
 
     /**
+     * 是否已到达
+     */
+    private Boolean arrival;
+
+    /**
+     * 到达时间
+     */
+    private Date arrivalTime;
+
+    /**
      * 是否已入库
      */
-    private Byte inbound;
+    private Boolean inbound;
 
     /**
      * 入库时间
