@@ -25,6 +25,14 @@ public interface WarehouseMptApi {
     TableDataInfo list(WarehouseMpt warehouse);
 
     /**
+     * 根据仓库层级获取仓库列表
+     *
+     * @param warehouseLevel 仓库层级
+     * @return 仓库列表
+     */
+    List<WarehouseMpt> listByLevel(String warehouseLevel);
+
+    /**
      * 根据仓库ID获取仓库存储区域
      *
      * @param warehouseId 仓库ID

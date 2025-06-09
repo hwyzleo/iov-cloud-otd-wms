@@ -58,6 +58,21 @@ public class WarehouseMptController extends BaseController implements WarehouseM
     }
 
     /**
+     * 根据仓库层级获取仓库列表
+     *
+     * @param warehouseLevel 仓库层级
+     * @return 仓库列表
+     */
+    @RequiresPermissions("completeVehicle:warehouse:info:list")
+    @Override
+    @GetMapping(value = "/listByLevel")
+    public List<WarehouseMpt> listByLevel(@RequestParam String warehouseLevel) {
+        logger.info("管理后台用户[{}]根据仓库层级[{}]获取仓库列表", SecurityUtils.getUsername(), warehouseLevel);
+        List<WarehousePo> warehousePoList = warehouseAppService.search(null, null, warehouseLevel, null, null);
+        return WarehouseMptAssembler.INSTANCE.fromPoList(warehousePoList);
+    }
+
+    /**
      * 根据仓库ID获取仓库存储区域
      *
      * @param warehouseId 仓库ID
