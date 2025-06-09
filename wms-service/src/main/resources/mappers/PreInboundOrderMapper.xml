@@ -16,6 +16,8 @@
         <result column="vin" property="vin" />
         <result column="model_config_code" property="modelConfigCode" />
         <result column="warehouse_code" property="warehouseCode" />
+        <result column="warehouse_name" property="warehouseName" />
+        <result column="warehouse_level" property="warehouseLevel" />
         <result column="estimated_arrival_time" property="estimatedArrivalTime" />
         <result column="estimated_inbound_time" property="estimatedInboundTime" />
         <result column="audit" property="audit" />
@@ -32,6 +34,12 @@
     <sql id="baseColumnList">
         id, order_num, vin, model_config_code, warehouse_code, estimated_arrival_time, estimated_inbound_time, audit, audit_time, audit_by, arrival, arrival_time, inbound, inbound_time, inbound_by, 
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
+    </sql>
+
+    <!-- 包含仓库信息 -->
+    <sql id="columnListWithWarehouse">
+        t.id, t.order_num, t.vin, t.model_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.estimated_arrival_time, t.estimated_inbound_time, t.audit, t.audit_time, t.audit_by, t.arrival, t.arrival_time, t.inbound, t.inbound_time, t.inbound_by,
+        t.description, t.create_time, t.create_by, t.modify_time, t.modify_by, t.row_version, t.row_valid
     </sql>
 
     <!-- 插入 -->
@@ -219,8 +227,10 @@
 
     <!-- 根据Map对象获取对应数据列表 -->
     <select id="selectPoByMap" parameterType="java.util.Map" resultMap="baseResultMap">
-        SELECT <include refid="baseColumnList"/>
+        SELECT <include refid="columnListWithWarehouse"/>
         FROM tb_pre_inbound_order t
+        LEFT JOIN tb_warehouse w
+        ON t.warehouse_code = w.code
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
         <if test="orderNum != null and orderNum != ''">
@@ -230,7 +240,7 @@
             AND t.vin = #{vin}
         </if>
         <if test="warehouseLevel != null and warehouseLevel != ''">
-            AND t.warehouse_code IN (SELECT code FROM tb_warehouse WHERE warehouse_level = #{warehouseLevel})
+            AND w.warehouse_level = #{warehouseLevel}
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
             AND t.warehouse_code = #{warehouseCode}

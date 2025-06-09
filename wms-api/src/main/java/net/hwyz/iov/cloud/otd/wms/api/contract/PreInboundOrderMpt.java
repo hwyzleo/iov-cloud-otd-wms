@@ -48,6 +48,11 @@ public class PreInboundOrderMpt extends BaseRequest {
     private String warehouseCode;
 
     /**
+     * 仓库名称
+     */
+    private String warehouseName;
+
+    /**
      * 预计入库时间
      */
     private Date estimatedInboundTime;

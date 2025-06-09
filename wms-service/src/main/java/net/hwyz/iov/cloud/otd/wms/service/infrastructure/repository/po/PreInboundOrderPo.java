@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
-import net.hwyz.iov.cloud.framework.mysql.po.BasePo;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import net.hwyz.iov.cloud.framework.mysql.po.BasePo;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -57,6 +60,18 @@ public class PreInboundOrderPo extends BasePo {
      */
     @TableField("warehouse_code")
     private String warehouseCode;
+
+    /**
+     * 仓库名称
+     */
+    @TableField("warehouse_name")
+    private String warehouseName;
+
+    /**
+     * 仓库层级
+     */
+    @TableField("warehouse_level")
+    private String warehouseLevel;
 
     /**
      * 预计到达时间
