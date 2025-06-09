@@ -230,10 +230,10 @@
             AND t.vin = #{vin}
         </if>
         <if test="warehouseLevel != null and warehouseLevel != ''">
-            AND t.warehouse_code = #{warehouseCode}
+            AND t.warehouse_code IN (SELECT code FROM tb_warehouse WHERE warehouse_level = #{warehouseLevel})
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
-            AND t.warehouse_code IN (SELECT code FROM tb_warehouse WHERE warehouse_level = #{warehouseLevel})
+            AND t.warehouse_code = #{warehouseCode}
         </if>
         <if test="beginTime != null">
             and date_format(t.create_time,'%Y%m%d') &gt;= date_format(#{beginTime},'%Y%m%d')
