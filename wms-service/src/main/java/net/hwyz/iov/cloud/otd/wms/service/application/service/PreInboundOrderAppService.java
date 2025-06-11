@@ -44,7 +44,7 @@ public class PreInboundOrderAppService {
      * @param warehouseCode  仓库代码
      * @param beginTime      开始时间
      * @param endTime        结束时间
-     * @return 销售车型列表
+     * @return 预入库单列表
      */
     public List<PreInboundOrderPo> search(String orderNum, String vin, String warehouseLevel, String warehouseCode,
                                           Date beginTime, Date endTime) {

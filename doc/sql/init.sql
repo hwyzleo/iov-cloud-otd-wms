@@ -102,3 +102,28 @@ CREATE TABLE `db_wms`.`tb_pre_inbound_order`
     UNIQUE KEY (`order_num`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='预入库单';
+
+DROP TABLE IF EXISTS `db_wms`.`tb_inbound_order`;
+CREATE TABLE `db_wms`.`tb_inbound_order`
+(
+    `id`                    BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `order_num`             VARCHAR(255) NOT NULL COMMENT '入库单号',
+    `pre_order_num`         VARCHAR(255)          DEFAULT NULL COMMENT '预入库单号',
+    `vin`                   VARCHAR(20)  NOT NULL COMMENT '车架号',
+    `model_config_code`     VARCHAR(255) NOT NULL COMMENT '车型配置代码',
+    `warehouse_code`        VARCHAR(50)  NOT NULL COMMENT '仓库代码',
+    `storage_area_code`     VARCHAR(50)           DEFAULT NULL COMMENT '储区代码',
+    `storage_location_code` VARCHAR(50)           DEFAULT NULL COMMENT '储位代码',
+    `inbound_time`          TIMESTAMP    NOT NULL COMMENT '入库时间',
+    `inbound_by`            BIGINT                DEFAULT NULL COMMENT '入库者',
+    `description`           VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`             BIGINT                DEFAULT NULL COMMENT '创建者',
+    `modify_time`           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`             BIGINT                DEFAULT NULL COMMENT '修改者',
+    `row_version`           INT                   DEFAULT NULL COMMENT '记录版本',
+    `row_valid`             TINYINT               DEFAULT NULL COMMENT '是否有效',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`order_num`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='入库单';

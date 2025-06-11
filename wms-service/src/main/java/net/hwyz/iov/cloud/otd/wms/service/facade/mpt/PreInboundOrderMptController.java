@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 仓库相关管理接口实现类
+ * 预入库单相关管理接口实现类
  *
  * @author hwyz_leo
  */
@@ -92,7 +92,7 @@ public class PreInboundOrderMptController extends BaseController implements PreI
     @Override
     @PostMapping
     public AjaxResult add(@Validated @RequestBody PreInboundOrderMpt preInboundOrder) {
-        logger.info("管理后台用户[{}]新增预入库单[{}]", SecurityUtils.getUsername(), preInboundOrder.getOrderNum());
+        logger.info("管理后台用户[{}]新增车辆[{}]预入库单", SecurityUtils.getUsername(), preInboundOrder.getVin());
         PreInboundOrderPo preInboundOrderPo = PreInboundOrderMptAssembler.INSTANCE.toPo(preInboundOrder);
         preInboundOrderPo.setCreateBy(SecurityUtils.getUserId().toString());
         return toAjax(preInboundOrderAppService.createPreInboundOrder(preInboundOrderPo));
