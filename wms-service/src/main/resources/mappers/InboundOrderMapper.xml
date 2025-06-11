@@ -31,7 +31,7 @@
 
     <!-- 包含仓库信息 -->
     <sql id="columnListWithWarehouse">
-        t.id, t.order_num, t.vin, t.model_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.estimated_arrival_time, t.estimated_inbound_time, t.audit, t.audit_time, t.audit_by, t.arrival, t.arrival_time, t.inbound, t.inbound_time, t.inbound_by,
+        t.id, t.order_num, t.pre_order_num, t.vin, t.model_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.storage_area_code, t.storage_location_code, t.inbound_time, t.inbound_by,
         t.description, t.create_time, t.create_by, t.modify_time, t.modify_by, t.row_version, t.row_valid
     </sql>
 

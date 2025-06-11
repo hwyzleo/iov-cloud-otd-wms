@@ -65,6 +65,12 @@ public class InboundOrderPo extends BasePo {
     private String warehouseCode;
 
     /**
+     * 仓库名称
+     */
+    @TableField("warehouse_name")
+    private String warehouseName;
+
+    /**
      * 仓库层级
      */
     @TableField("warehouse_level")
