@@ -58,6 +58,16 @@ public class InboundOrderMpt extends BaseRequest {
     private String warehouseName;
 
     /**
+     * 储区代码
+     */
+    private String storageAreaCode;
+
+    /**
+     * 储位代码
+     */
+    private String storageLocationCode;
+
+    /**
      * 入库时间
      */
     private Date inboundTime;
