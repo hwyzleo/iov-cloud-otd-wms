@@ -76,7 +76,7 @@ public class InventoryTransferMptController extends BaseController implements In
     @Override
     @GetMapping(value = "/{inventoryTransferId}")
     public AjaxResult getInfo(@PathVariable Long inventoryTransferId) {
-        logger.info("管理后台用户[{}]根据预移库信息ID[{}]获取移库信息", SecurityUtils.getUsername(), inventoryTransferId);
+        logger.info("管理后台用户[{}]根据移库信息ID[{}]获取移库信息", SecurityUtils.getUsername(), inventoryTransferId);
         InventoryTransferPo inventoryTransferPo = inventoryTransferAppService.getInventoryTransferById(inventoryTransferId);
         return success(InventoryTransferMptAssembler.INSTANCE.fromPo(inventoryTransferPo));
     }

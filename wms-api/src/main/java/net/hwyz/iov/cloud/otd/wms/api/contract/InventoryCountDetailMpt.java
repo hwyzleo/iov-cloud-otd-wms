@@ -6,7 +6,7 @@ import net.hwyz.iov.cloud.framework.common.web.domain.BaseRequest;
 import java.util.Date;
 
 /**
- * 管理后台移库信息
+ * 管理后台盘点信息
  *
  * @author hwyz_leo
  */
@@ -15,12 +15,17 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class InventoryTransferMpt extends BaseRequest {
+public class InventoryCountDetailMpt extends BaseRequest {
 
     /**
      * 主键
      */
     private Long id;
+
+    /**
+     * 盘点单号
+     */
+    private String orderNum;
 
     /**
      * 车架号
@@ -38,49 +43,34 @@ public class InventoryTransferMpt extends BaseRequest {
     private String warehouseCode;
 
     /**
-     * 仓库名称
+     * 储区代码
      */
-    private String warehouseName;
+    private String storageAreaCode;
 
     /**
-     * 仓库层级
+     * 储位代码
      */
-    private String warehouseLevel;
+    private String storageLocationCode;
 
     /**
-     * 原储区代码
+     * 实际仓库代码
      */
-    private String oldStorageAreaCode;
+    private String actualWarehouseCode;
 
     /**
-     * 原储位代码
+     * 实际储区代码
      */
-    private String oldStorageLocationCode;
+    private String actualStorageAreaCode;
 
     /**
-     * 新储区代码
+     * 实际储位代码
      */
-    private String newStorageAreaCode;
+    private String actualStorageLocationCode;
 
     /**
-     * 新储位代码
+     * 盘点时间
      */
-    private String newStorageLocationCode;
-
-    /**
-     * 移库状态
-     */
-    private Short transferState;
-
-    /**
-     * 移库时间
-     */
-    private Date transferTime;
-
-    /**
-     * 移库者
-     */
-    private Long transferBy;
+    private Date countTime;
 
     /**
      * 创建时间
