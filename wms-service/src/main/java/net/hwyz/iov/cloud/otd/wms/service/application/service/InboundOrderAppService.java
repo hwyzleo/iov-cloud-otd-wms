@@ -28,6 +28,7 @@ import java.util.Map;
 public class InboundOrderAppService {
 
     private final InboundOrderDao inboundOrderDao;
+    private final InventoryAppService inventoryAppService;
 
     /**
      * 默认的前置仓库代码
@@ -110,7 +111,11 @@ public class InboundOrderAppService {
                 }
             }
         }
-        return inboundOrderDao.insertPo(inboundOrder);
+        int result = inboundOrderDao.insertPo(inboundOrder);
+        inventoryAppService.inbound(inboundOrder.getVin(), inboundOrder.getModelConfigCode(), inboundOrder.getWarehouseCode(),
+                inboundOrder.getStorageAreaCode(), inboundOrder.getStorageLocationCode(), inboundOrder.getInboundTime(),
+                inboundOrder.getInboundBy());
+        return result;
     }
 
     /**
