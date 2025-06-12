@@ -38,6 +38,16 @@ public class InventoryMpt extends BaseRequest {
     private String warehouseCode;
 
     /**
+     * 仓库体系层级
+     */
+    private String warehouseLevel;
+
+    /**
+     * 仓库名称
+     */
+    private String warehouseName;
+
+    /**
      * 储区代码
      */
     private String storageAreaCode;

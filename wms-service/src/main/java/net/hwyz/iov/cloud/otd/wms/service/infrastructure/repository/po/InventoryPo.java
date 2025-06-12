@@ -56,6 +56,18 @@ public class InventoryPo extends BasePo {
     private String warehouseCode;
 
     /**
+     * 仓库名称
+     */
+    @TableField("warehouse_name")
+    private String warehouseName;
+
+    /**
+     * 仓库层级
+     */
+    @TableField("warehouse_level")
+    private String warehouseLevel;
+
+    /**
      * 储区代码
      */
     @TableField("storage_area_code")
