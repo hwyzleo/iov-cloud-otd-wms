@@ -202,7 +202,7 @@
 
     <!-- 根据Map对象获取对应数据列表 -->
     <select id="selectPoByMap" parameterType="java.util.Map" resultMap="baseResultMap">
-        SELECT <include refid="baseColumnList"/>
+        SELECT <include refid="columnListWithWarehouse"/>
         FROM tb_inventory_transfer t
         LEFT JOIN tb_warehouse w
         ON t.warehouse_code = w.code
