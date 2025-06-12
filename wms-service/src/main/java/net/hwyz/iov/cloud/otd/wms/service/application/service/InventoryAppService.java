@@ -64,6 +64,17 @@ public class InventoryAppService {
     }
 
     /**
+     * 根据仓库代码和车架号获取库存
+     *
+     * @param warehouseCode 仓库代码
+     * @param vin           车架号
+     * @return 库存信息
+     */
+    public InventoryPo getInventoryByWarehouseAndVin(String warehouseCode, String vin) {
+        return inventoryDao.selectByWarehouseCodeAndVin(warehouseCode, vin);
+    }
+
+    /**
      * 库存入库
      *
      * @param vin                 车架号

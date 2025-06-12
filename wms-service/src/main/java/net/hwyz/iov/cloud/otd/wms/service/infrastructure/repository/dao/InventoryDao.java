@@ -23,4 +23,13 @@ public interface InventoryDao extends BaseDao<InventoryPo, Long> {
      */
     int batchPhysicalDeletePo(Long[] ids);
 
+    /**
+     * 根据仓库编码和车辆vin查询库存
+     *
+     * @param warehouseCode 仓库代码
+     * @param vin           车架号
+     * @return 库存
+     */
+    InventoryPo selectByWarehouseCodeAndVin(String warehouseCode, String vin);
+
 }

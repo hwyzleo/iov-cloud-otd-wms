@@ -153,3 +153,29 @@ CREATE TABLE `db_wms`.`tb_inventory`
     KEY `idx_warehouse_code` (`warehouse_code`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='库存';
+
+DROP TABLE IF EXISTS `db_wms`.`tb_inventory_transfer`;
+CREATE TABLE `db_wms`.`tb_inventory_transfer`
+(
+    `id`                        BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `vin`                       VARCHAR(20)  NOT NULL COMMENT '车架号',
+    `model_config_code`         VARCHAR(255) NOT NULL COMMENT '车型配置代码',
+    `warehouse_code`            VARCHAR(50)  NOT NULL COMMENT '仓库代码',
+    `old_storage_area_code`     VARCHAR(50)           DEFAULT NULL COMMENT '原储区代码',
+    `old_storage_location_code` VARCHAR(50)           DEFAULT NULL COMMENT '原储位代码',
+    `new_storage_area_code`     VARCHAR(50)  NOT NULL COMMENT '新储区代码',
+    `new_storage_location_code` VARCHAR(50)  NOT NULL COMMENT '新储位代码',
+    `transfer_state`            SMALLINT              DEFAULT NULL COMMENT '移库状态',
+    `transfer_time`             TIMESTAMP             DEFAULT NULL COMMENT '移库时间',
+    `transfer_by`               BIGINT                DEFAULT NULL COMMENT '移库者',
+    `description`               VARCHAR(255)          DEFAULT NULL COMMENT '备注',
+    `create_time`               TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by`                 BIGINT                DEFAULT NULL COMMENT '创建者',
+    `modify_time`               TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+    `modify_by`                 BIGINT                DEFAULT NULL COMMENT '修改者',
+    `row_version`               INT                   DEFAULT NULL COMMENT '记录版本',
+    `row_valid`                 TINYINT               DEFAULT NULL COMMENT '是否有效',
+    PRIMARY KEY (`id`),
+    KEY `idx_warehouse_code` (`warehouse_code`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='移库';

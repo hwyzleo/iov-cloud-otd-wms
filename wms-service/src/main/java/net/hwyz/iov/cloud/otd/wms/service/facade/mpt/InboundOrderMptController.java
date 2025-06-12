@@ -124,12 +124,12 @@ public class InboundOrderMptController extends BaseController implements Inbound
      * @param inboundOrderIds 入库单ID数组
      * @return 结果
      */
-    @Log(title = "预入库单管理", businessType = BusinessType.DELETE)
+    @Log(title = "入库单管理", businessType = BusinessType.DELETE)
     @RequiresPermissions("completeVehicle:warehouse:inboundOrder:remove")
     @Override
     @DeleteMapping("/{inboundOrderIds}")
     public AjaxResult remove(@PathVariable Long[] inboundOrderIds) {
-        logger.info("管理后台用户[{}]删除预入库单[{}]", SecurityUtils.getUsername(), inboundOrderIds);
+        logger.info("管理后台用户[{}]删除入库单[{}]", SecurityUtils.getUsername(), inboundOrderIds);
         return toAjax(inboundOrderAppService.deleteInboundOrderByIds(inboundOrderIds));
     }
 
