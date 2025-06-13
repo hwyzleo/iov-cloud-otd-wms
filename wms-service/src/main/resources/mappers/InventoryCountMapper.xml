@@ -14,7 +14,6 @@
         <result column="row_valid" property="rowValid" />
         <result column="order_num" property="orderNum" />
         <result column="type" property="type" />
-        <result column="model_config_code" property="modelConfigCode" />
         <result column="warehouse_code" property="warehouseCode" />
         <result column="storage_area_code" property="storageAreaCode" />
         <result column="state" property="state" />
@@ -24,18 +23,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, order_num, type, model_config_code, warehouse_code, storage_area_code, state, start_time, end_time, 
+        id, order_num, type, warehouse_code, storage_area_code, state, start_time, end_time,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_inventory_count (
-            id, order_num, type, model_config_code, warehouse_code, storage_area_code, state, start_time, end_time, 
+            id, order_num, type, warehouse_code, storage_area_code, state, start_time, end_time,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{orderNum}, #{type}, #{modelConfigCode}, #{warehouseCode}, #{storageAreaCode}, #{state}, #{startTime}, #{endTime}, 
+            #{id}, #{orderNum}, #{type}, #{warehouseCode}, #{storageAreaCode}, #{state}, #{startTime}, #{endTime},
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -43,13 +42,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_inventory_count (
-            id, order_num, type, model_config_code, warehouse_code, storage_area_code, state, start_time, end_time, 
+            id, order_num, type, warehouse_code, storage_area_code, state, start_time, end_time,
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.orderNum}, #{item.type}, #{item.modelConfigCode}, #{item.warehouseCode}, #{item.storageAreaCode}, #{item.state}, #{item.startTime}, #{item.endTime}, 
+            #{item.id}, #{item.orderNum}, #{item.type}, #{item.warehouseCode}, #{item.storageAreaCode}, #{item.state}, #{item.startTime}, #{item.endTime},
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -63,9 +62,6 @@
         </if>
         <if test="type != null">
             t.type = #{type},
-        </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            t.model_config_code = #{modelConfigCode},
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
             t.warehouse_code = #{warehouseCode},
@@ -138,9 +134,6 @@
         </if>
         <if test="type != null">
             AND t.type = #{type}
-        </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            AND t.model_config_code = #{modelConfigCode}
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
             AND t.warehouse_code = #{warehouseCode}

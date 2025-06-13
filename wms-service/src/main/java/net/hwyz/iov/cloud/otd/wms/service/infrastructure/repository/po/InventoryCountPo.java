@@ -50,12 +50,6 @@ public class InventoryCountPo extends BasePo {
     private Integer type;
 
     /**
-     * 车型配置代码
-     */
-    @TableField("model_config_code")
-    private String modelConfigCode;
-
-    /**
      * 仓库代码
      */
     @TableField("warehouse_code")

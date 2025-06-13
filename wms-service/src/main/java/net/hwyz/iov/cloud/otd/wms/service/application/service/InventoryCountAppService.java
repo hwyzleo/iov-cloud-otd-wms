@@ -1,7 +1,10 @@
 package net.hwyz.iov.cloud.otd.wms.service.application.service;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.util.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.util.StrUtil;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.dao.InventoryCountDao;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.dao.InventoryCountDetailDao;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.repository.po.InventoryCountDetailPo;
@@ -25,6 +28,19 @@ public class InventoryCountAppService {
 
     private final InventoryCountDao inventoryCountDao;
     private final InventoryCountDetailDao inventoryCountDetailDao;
+
+    /**
+     * 盘点类型：仓库
+     */
+    private static final Integer TYPE_WAREHOUSE = 1;
+    /**
+     * 盘点类型：储区
+     */
+    private static final Integer TYPE_STORAGE_AREA = 2;
+    /**
+     * 盘点状态：新建
+     */
+    private static final Integer STATE_NEW = 1;
 
     /**
      * 查询盘点信息
@@ -97,6 +113,15 @@ public class InventoryCountAppService {
      * @return 结果
      */
     public int createInventoryCount(InventoryCountPo inventoryCount) {
+        if (StrUtil.isBlank(inventoryCount.getOrderNum())) {
+            inventoryCount.setOrderNum(generateOrderNum());
+        }
+        if (StrUtil.isBlank(inventoryCount.getStorageAreaCode())) {
+            inventoryCount.setType(TYPE_WAREHOUSE);
+        } else {
+            inventoryCount.setType(TYPE_STORAGE_AREA);
+        }
+        inventoryCount.setState(STATE_NEW);
         return inventoryCountDao.insertPo(inventoryCount);
     }
 
@@ -149,6 +174,16 @@ public class InventoryCountAppService {
      */
     public int deleteInventoryCountDetailByIds(String orderNum, Long[] ids) {
         return inventoryCountDetailDao.batchPhysicalDeletePo(orderNum, ids);
+    }
+
+    /**
+     * 生成盘点单号
+     *
+     * @return 预入库单号
+     */
+    private String generateOrderNum() {
+        return "IC" + LocalDateTimeUtil.format(LocalDateTimeUtil.now(), "yyyyMMddHHmmssSSS") +
+                RandomUtil.randomNumbers(3);
     }
 
 }

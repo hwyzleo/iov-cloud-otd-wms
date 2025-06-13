@@ -186,7 +186,6 @@ CREATE TABLE `db_wms`.`tb_inventory_count`
     `id`                BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
     `order_num`         VARCHAR(255) NOT NULL COMMENT '盘点单号',
     `type`              SMALLINT     NOT NULL COMMENT '盘点类型：1-按仓库，2-按储区',
-    `model_config_code` VARCHAR(255) NOT NULL COMMENT '车型配置代码',
     `warehouse_code`    VARCHAR(50)  NOT NULL COMMENT '仓库代码',
     `storage_area_code` VARCHAR(50)           DEFAULT NULL COMMENT '储区代码',
     `state`             SMALLINT     NOT NULL COMMENT '盘点状态：1-新建，2-已下发，3-开始盘点，4-结束盘点',
