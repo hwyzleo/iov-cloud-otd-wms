@@ -30,7 +30,7 @@ public class InventoryCountMpt extends BaseRequest {
     /**
      * 盘点类型：1-按仓库，2-按储区
      */
-    private Short type;
+    private Integer type;
 
     /**
      * 车型配置代码

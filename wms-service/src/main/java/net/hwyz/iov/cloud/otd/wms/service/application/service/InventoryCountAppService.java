@@ -30,11 +30,11 @@ public class InventoryCountAppService {
     private final InventoryCountDetailDao inventoryCountDetailDao;
 
     /**
-     * 盘点类型：仓库
+     * 盘点类型：按仓库
      */
     private static final Integer TYPE_WAREHOUSE = 1;
     /**
-     * 盘点类型：储区
+     * 盘点类型：按储区
      */
     private static final Integer TYPE_STORAGE_AREA = 2;
     /**
@@ -46,6 +46,7 @@ public class InventoryCountAppService {
      * 查询盘点信息
      *
      * @param orderNum       盘点单号
+     * @param type           盘点类型
      * @param warehouseLevel 仓库体系层级
      * @param warehouseCode  仓库代码
      * @param state          盘点状态
@@ -53,10 +54,11 @@ public class InventoryCountAppService {
      * @param endTime        结束时间
      * @return 盘点信息列表
      */
-    public List<InventoryCountPo> search(String orderNum, String warehouseLevel, String warehouseCode, Integer state,
+    public List<InventoryCountPo> search(String orderNum, Integer type, String warehouseLevel, String warehouseCode, Integer state,
                                          Date beginTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();
         map.put("orderNum", orderNum);
+        map.put("type", type);
         map.put("warehouseLevel", warehouseLevel);
         map.put("warehouseCode", warehouseCode);
         map.put("state", state);

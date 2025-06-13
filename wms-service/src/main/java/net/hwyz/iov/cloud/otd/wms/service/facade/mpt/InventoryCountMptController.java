@@ -49,8 +49,8 @@ public class InventoryCountMptController extends BaseController implements Inven
         logger.info("管理后台用户[{}]分页查询盘点信息", SecurityUtils.getUsername());
         startPage();
         List<InventoryCountPo> inventoryCountPoList = inventoryCountAppService.search(inventoryCount.getOrderNum(),
-                inventoryCount.getWarehouseLevel(), inventoryCount.getWarehouseCode(), inventoryCount.getState(),
-                getBeginTime(inventoryCount), getEndTime(inventoryCount));
+                inventoryCount.getType(), inventoryCount.getWarehouseLevel(), inventoryCount.getWarehouseCode(),
+                inventoryCount.getState(), getBeginTime(inventoryCount), getEndTime(inventoryCount));
         List<InventoryCountMpt> inventoryCountMptList = InventoryCountMptAssembler.INSTANCE.fromPoList(inventoryCountPoList);
         return getDataTable(inventoryCountPoList, inventoryCountMptList);
     }

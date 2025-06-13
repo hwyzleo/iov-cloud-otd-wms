@@ -15,6 +15,8 @@
         <result column="order_num" property="orderNum" />
         <result column="type" property="type" />
         <result column="warehouse_code" property="warehouseCode" />
+        <result column="warehouse_level" property="warehouseLevel" />
+        <result column="warehouse_name" property="warehouseName" />
         <result column="storage_area_code" property="storageAreaCode" />
         <result column="state" property="state" />
         <result column="start_time" property="startTime" />
@@ -25,6 +27,12 @@
     <sql id="baseColumnList">
         id, order_num, type, warehouse_code, storage_area_code, state, start_time, end_time,
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
+    </sql>
+
+    <!-- 包含仓库信息 -->
+    <sql id="columnListWithWarehouse">
+        t.id, t.order_num, t.type, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.storage_area_code, t.state, t.start_time, t.end_time,
+        t.description, t.create_time, t.create_by, t.modify_time, t.modify_by, t.row_version, t.row_valid
     </sql>
 
     <!-- 插入 -->
@@ -173,10 +181,33 @@
 
     <!-- 根据Map对象获取对应数据列表 -->
     <select id="selectPoByMap" parameterType="java.util.Map" resultMap="baseResultMap">
-        SELECT <include refid="baseColumnList"/>
+        SELECT <include refid="columnListWithWarehouse"/>
         FROM tb_inventory_count t
+        LEFT JOIN tb_warehouse w
+        ON t.warehouse_code = w.code
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
+        <if test="warehouseLevel != null and warehouseLevel != ''">
+            AND w.warehouse_level = #{warehouseLevel}
+        </if>
+        <if test="orderNum != null and orderNum != ''">
+            AND t.order_num = #{orderNum}
+        </if>
+        <if test="type != null">
+            AND t.type = #{type}
+        </if>
+        <if test="warehouseCode != null and warehouseCode != ''">
+            AND t.warehouse_code = #{warehouseCode}
+        </if>
+        <if test="state != null">
+            AND t.state = #{state}
+        </if>
+        <if test="beginTime != null">
+            and date_format(t.create_time,'%Y%m%d') &gt;= date_format(#{beginTime},'%Y%m%d')
+        </if>
+        <if test="endTime != null">
+            and date_format(t.create_time,'%Y%m%d') &lt;= date_format(#{endTime},'%Y%m%d')
+        </if>
         ORDER BY t.id DESC
     </select>
 
