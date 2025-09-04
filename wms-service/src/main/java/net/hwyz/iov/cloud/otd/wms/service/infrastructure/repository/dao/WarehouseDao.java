@@ -23,12 +23,4 @@ public interface WarehouseDao extends BaseDao<WarehousePo, Long> {
      */
     WarehousePo selectPoByCode(String code);
 
-    /**
-     * 批量物理删除仓库信息
-     *
-     * @param ids 仓库ID数组
-     * @return 影响行数
-     */
-    int batchPhysicalDeletePo(Long[] ids);
-
 }
