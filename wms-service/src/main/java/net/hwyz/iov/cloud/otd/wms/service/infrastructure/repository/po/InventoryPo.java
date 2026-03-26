@@ -44,10 +44,10 @@ public class InventoryPo extends BasePo {
     private String vin;
 
     /**
-     * 车型配置代码
+     * 生产配置代码
      */
-    @TableField("model_config_code")
-    private String modelConfigCode;
+    @TableField("build_config_code")
+    private String buildConfigCode;
 
     /**
      * 仓库代码

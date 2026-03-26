@@ -13,7 +13,7 @@
         <result column="row_version" property="rowVersion" />
         <result column="row_valid" property="rowValid" />
         <result column="vin" property="vin" />
-        <result column="model_config_code" property="modelConfigCode" />
+        <result column="build_config_code" property="buildConfigCode" />
         <result column="warehouse_code" property="warehouseCode" />
         <result column="warehouse_level" property="warehouseLevel" />
         <result column="warehouse_name" property="warehouseName" />
@@ -28,24 +28,24 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, vin, model_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, 
+        id, vin, build_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, 
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 包含仓库信息 -->
     <sql id="columnListWithWarehouse">
-        t.id, t.vin, t.model_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.storage_area_code, t.storage_location_code, t.inbound_time, t.inbound_by, t.outbound_time, t.outbound_by, t.state,
+        t.id, t.vin, t.build_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.storage_area_code, t.storage_location_code, t.inbound_time, t.inbound_by, t.outbound_time, t.outbound_by, t.state,
         t.description, t.create_time, t.create_by, t.modify_time, t.modify_by, t.row_version, t.row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_inventory (
-            id, vin, model_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, 
+            id, vin, build_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{vin}, #{modelConfigCode}, #{warehouseCode}, #{storageAreaCode}, #{storageLocationCode}, #{inboundTime}, #{inboundBy}, #{outboundTime}, #{outboundBy}, #{state}, 
+            #{id}, #{vin}, #{buildConfigCode}, #{warehouseCode}, #{storageAreaCode}, #{storageLocationCode}, #{inboundTime}, #{inboundBy}, #{outboundTime}, #{outboundBy}, #{state}, 
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -53,13 +53,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_inventory (
-            id, vin, model_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, 
+            id, vin, build_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.vin}, #{item.modelConfigCode}, #{item.warehouseCode}, #{item.storageAreaCode}, #{item.storageLocationCode}, #{item.inboundTime}, #{item.inboundBy}, #{item.outboundTime}, #{item.outboundBy}, #{item.state}, 
+            #{item.id}, #{item.vin}, #{item.buildConfigCode}, #{item.warehouseCode}, #{item.storageAreaCode}, #{item.storageLocationCode}, #{item.inboundTime}, #{item.inboundBy}, #{item.outboundTime}, #{item.outboundBy}, #{item.state}, 
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -71,8 +71,8 @@
         <if test="vin != null and vin != ''">
             t.vin = #{vin},
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            t.model_config_code = #{modelConfigCode},
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            t.build_config_code = #{buildConfigCode},
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
             t.warehouse_code = #{warehouseCode},
@@ -161,8 +161,8 @@
         <if test="vin != null and vin != ''">
             AND t.vin = #{vin}
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            AND t.model_config_code = #{modelConfigCode}
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            AND t.build_config_code = #{buildConfigCode}
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
             AND t.warehouse_code = #{warehouseCode}

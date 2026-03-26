@@ -35,10 +35,10 @@ public class PreInboundOrderExService extends BaseRequest {
     private String vin;
 
     /**
-     * 车型配置代码
+     * 生产配置代码
      */
-    @NotBlank(message = "车型配置代码不能为空")
-    private String modelConfigCode;
+    @NotBlank(message = "生产配置代码不能为空")
+    private String buildConfigCode;
 
     /**
      * 仓库体系层级

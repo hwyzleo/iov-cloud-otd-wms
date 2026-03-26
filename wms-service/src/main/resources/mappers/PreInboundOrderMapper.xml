@@ -14,7 +14,7 @@
         <result column="row_valid" property="rowValid" />
         <result column="order_num" property="orderNum" />
         <result column="vin" property="vin" />
-        <result column="model_config_code" property="modelConfigCode" />
+        <result column="build_config_code" property="buildConfigCode" />
         <result column="warehouse_code" property="warehouseCode" />
         <result column="warehouse_name" property="warehouseName" />
         <result column="warehouse_level" property="warehouseLevel" />
@@ -32,24 +32,24 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, order_num, vin, model_config_code, warehouse_code, estimated_arrival_time, estimated_inbound_time, audit, audit_time, audit_by, arrival, arrival_time, inbound, inbound_time, inbound_by, 
+        id, order_num, vin, build_config_code, warehouse_code, estimated_arrival_time, estimated_inbound_time, audit, audit_time, audit_by, arrival, arrival_time, inbound, inbound_time, inbound_by, 
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 包含仓库信息 -->
     <sql id="columnListWithWarehouse">
-        t.id, t.order_num, t.vin, t.model_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.estimated_arrival_time, t.estimated_inbound_time, t.audit, t.audit_time, t.audit_by, t.arrival, t.arrival_time, t.inbound, t.inbound_time, t.inbound_by,
+        t.id, t.order_num, t.vin, t.build_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.estimated_arrival_time, t.estimated_inbound_time, t.audit, t.audit_time, t.audit_by, t.arrival, t.arrival_time, t.inbound, t.inbound_time, t.inbound_by,
         t.description, t.create_time, t.create_by, t.modify_time, t.modify_by, t.row_version, t.row_valid
     </sql>
 
     <!-- 插入 -->
     <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_pre_inbound_order (
-            id, order_num, vin, model_config_code, warehouse_code, estimated_arrival_time, estimated_inbound_time, audit, audit_time, audit_by, arrival, arrival_time, inbound, inbound_time, inbound_by, 
+            id, order_num, vin, build_config_code, warehouse_code, estimated_arrival_time, estimated_inbound_time, audit, audit_time, audit_by, arrival, arrival_time, inbound, inbound_time, inbound_by, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES (
-            #{id}, #{orderNum}, #{vin}, #{modelConfigCode}, #{warehouseCode}, #{estimatedArrivalTime}, #{estimatedInboundTime}, #{audit}, #{auditTime}, #{auditBy}, #{arrival}, #{arrivalTime}, #{inbound}, #{inboundTime}, #{inboundBy}, 
+            #{id}, #{orderNum}, #{vin}, #{buildConfigCode}, #{warehouseCode}, #{estimatedArrivalTime}, #{estimatedInboundTime}, #{audit}, #{auditTime}, #{auditBy}, #{arrival}, #{arrivalTime}, #{inbound}, #{inboundTime}, #{inboundBy}, 
             #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
         )
     </insert>
@@ -57,13 +57,13 @@
     <!-- 批量插入 -->
     <insert id="batchInsertPo" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
         INSERT INTO tb_pre_inbound_order (
-            id, order_num, vin, model_config_code, warehouse_code, estimated_arrival_time, estimated_inbound_time, audit, audit_time, audit_by, arrival, arrival_time, inbound, inbound_time, inbound_by, 
+            id, order_num, vin, build_config_code, warehouse_code, estimated_arrival_time, estimated_inbound_time, audit, audit_time, audit_by, arrival, arrival_time, inbound, inbound_time, inbound_by, 
             description, create_time, create_by, modify_time, modify_by, row_version, row_valid
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
         (
-            #{item.id}, #{item.orderNum}, #{item.vin}, #{item.modelConfigCode}, #{item.warehouseCode}, #{item.estimatedArrivalTime}, #{item.estimatedInboundTime}, #{item.audit}, #{item.auditTime}, #{item.auditBy}, #{item.arrival}, #{item.arrivalTime}, #{item.inbound}, #{item.inboundTime}, #{item.inboundBy}, 
+            #{item.id}, #{item.orderNum}, #{item.vin}, #{item.buildConfigCode}, #{item.warehouseCode}, #{item.estimatedArrivalTime}, #{item.estimatedInboundTime}, #{item.audit}, #{item.auditTime}, #{item.auditBy}, #{item.arrival}, #{item.arrivalTime}, #{item.inbound}, #{item.inboundTime}, #{item.inboundBy}, 
             #{item.description}, now(), #{item.createBy}, now(), #{item.modifyBy}, 1, 1
         )
         </foreach>
@@ -75,8 +75,8 @@
         <if test="vin != null and vin != ''">
             t.vin = #{vin},
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            t.model_config_code = #{modelConfigCode},
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            t.build_config_code = #{buildConfigCode},
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
             t.warehouse_code = #{warehouseCode},
@@ -168,8 +168,8 @@
         <if test="vin != null and vin != ''">
             AND t.vin = #{vin}
         </if>
-        <if test="modelConfigCode != null and modelConfigCode != ''">
-            AND t.model_config_code = #{modelConfigCode}
+        <if test="buildConfigCode != null and buildConfigCode != ''">
+            AND t.build_config_code = #{buildConfigCode}
         </if>
         <if test="warehouseCode != null and warehouseCode != ''">
             AND t.warehouse_code = #{warehouseCode}

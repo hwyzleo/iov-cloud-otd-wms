@@ -78,18 +78,18 @@ public class InventoryAppService {
      * 库存入库
      *
      * @param vin                 车架号
-     * @param modelConfigCode     车型配置代码
+     * @param buildConfigCode     生产配置代码
      * @param warehouseCode       仓库代码
      * @param storageAreaCode     储区代码
      * @param storageLocationCode 储位代码
      * @param inboundTime         入库时间
      * @param inboundBy           入库者
      */
-    public void inbound(String vin, String modelConfigCode, String warehouseCode, String storageAreaCode,
+    public void inbound(String vin, String buildConfigCode, String warehouseCode, String storageAreaCode,
                         String storageLocationCode, Date inboundTime, Long inboundBy) {
         InventoryPo inventory = InventoryPo.builder()
                 .vin(vin)
-                .modelConfigCode(modelConfigCode)
+                .buildConfigCode(buildConfigCode)
                 .warehouseCode(warehouseCode)
                 .storageAreaCode(storageAreaCode)
                 .storageLocationCode(storageLocationCode)

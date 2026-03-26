@@ -28,9 +28,9 @@ public class InventoryMpt extends BaseRequest {
     private String vin;
 
     /**
-     * 车型配置代码
+     * 生产配置代码
      */
-    private String modelConfigCode;
+    private String buildConfigCode;
 
     /**
      * 仓库代码

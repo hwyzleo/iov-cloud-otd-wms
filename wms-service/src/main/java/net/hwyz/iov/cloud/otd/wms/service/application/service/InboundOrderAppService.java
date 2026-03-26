@@ -112,7 +112,7 @@ public class InboundOrderAppService {
             }
         }
         int result = inboundOrderDao.insertPo(inboundOrder);
-        inventoryAppService.inbound(inboundOrder.getVin(), inboundOrder.getModelConfigCode(), inboundOrder.getWarehouseCode(),
+        inventoryAppService.inbound(inboundOrder.getVin(), inboundOrder.getBuildConfigCode(), inboundOrder.getWarehouseCode(),
                 inboundOrder.getStorageAreaCode(), inboundOrder.getStorageLocationCode(), inboundOrder.getInboundTime(),
                 inboundOrder.getInboundBy());
         return result;
