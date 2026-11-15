@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: otd-wms-test
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false

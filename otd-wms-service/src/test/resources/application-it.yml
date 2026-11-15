@@ -1,0 +1,27 @@
+# WMS 集成测试配置：真实 MySQL + 真实 Kafka（默认连接本机 docker 服务，可用环境变量覆盖）
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${WMS_IT_DB_USER:root}
+    password: ${WMS_IT_DB_PASSWORD:cr014_root_pw}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 1
+  kafka:
+    bootstrap-servers: ${WMS_IT_KAFKA:127.0.0.1:9094}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+iov:
+  web:
+    jackson:
+      zone-id: UTC
+      date-format: ISO
+
+logging:
+  level:
+    root: WARN
+    net.hwyz.iov.cloud.otd.wms: INFO
