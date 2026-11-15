@@ -100,7 +100,7 @@ public class VehicleOutboundCommandKafkaConsumer {
         } catch (DuplicateKeyException e) {
             Optional<InboxRecord> recorded = outboundOrderAppService.findRecordedCommandResult(topic, eventId);
             if (recorded.isPresent()) {
-                logger.info("事件[{}]并发重复投递，按已记录结果确认", eventId);
+                log.info("事件[{}]并发重复投递，按已记录结果确认", eventId);
                 return;
             }
             throw e;
@@ -108,7 +108,7 @@ public class VehicleOutboundCommandKafkaConsumer {
         if (result.outcome() == ConsumeOutcome.DEAD_LETTER) {
             throw new NonRetryableConsumeException(result.detail());
         }
-        logger.info("出库命令[{}]处理结果: {}, detail={}", eventId, result.outcome(), result.detail());
+        log.info("出库命令[{}]处理结果: {}, detail={}", eventId, result.outcome(), result.detail());
     }
 
     private List<String> vins(JsonNode payload) {
@@ -129,7 +129,7 @@ public class VehicleOutboundCommandKafkaConsumer {
                     eventId, "UNKNOWN", payloadDigest, record.key(),
                     WmsErrorCode.MESSAGE_INVALID.getCode(), message));
         } catch (DuplicateKeyException e) {
-            logger.info("非法命令[{}]已记录死信", eventId);
+            log.info("非法命令[{}]已记录死信", eventId);
         }
     }
 

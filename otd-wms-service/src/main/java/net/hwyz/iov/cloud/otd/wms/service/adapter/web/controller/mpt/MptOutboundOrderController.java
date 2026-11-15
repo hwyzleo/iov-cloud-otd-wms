@@ -47,7 +47,7 @@ public class MptOutboundOrderController extends BaseController implements Outbou
     @Override
     @GetMapping(value = "/list")
     public ApiResponse<PageResult<OutboundOrderMpt>> list(OutboundOrderMpt outboundOrder) {
-        logger.info("管理后台用户[{}]分页查询出库单", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]分页查询出库单", WebOperators.currentOperator());
         startPage();
         List<OutboundOrder> list = outboundOrderAppService.search(new OutboundOrderCriteria(
                 outboundOrder.getOrderNum(), outboundOrder.getSourceSystem(), outboundOrder.getSourceOrderNum(),
@@ -61,7 +61,7 @@ public class MptOutboundOrderController extends BaseController implements Outbou
     @Override
     @GetMapping(value = "/{outboundOrderId}")
     public ApiResponse<OutboundOrderMpt> getInfo(@PathVariable Long outboundOrderId) {
-        logger.info("管理后台用户[{}]根据出库单ID[{}]获取出库单", WebOperators.currentOperator(), outboundOrderId);
+        log.info("管理后台用户[{}]根据出库单ID[{}]获取出库单", WebOperators.currentOperator(), outboundOrderId);
         OutboundOrder order = outboundOrderAppService.getById(outboundOrderId);
         return ApiResponse.ok(MptVoAssembler.fromOutbound(WmsResultAssembler.fromOutbound(order)));
     }
@@ -70,7 +70,7 @@ public class MptOutboundOrderController extends BaseController implements Outbou
     @Override
     @GetMapping(value = "/{outboundOrderId}/detail")
     public ApiResponse<List<OutboundOrderDetailMpt>> listDetail(@PathVariable Long outboundOrderId) {
-        logger.info("管理后台用户[{}]获取出库单ID[{}] VIN 明细", WebOperators.currentOperator(), outboundOrderId);
+        log.info("管理后台用户[{}]获取出库单ID[{}] VIN 明细", WebOperators.currentOperator(), outboundOrderId);
         List<OutboundOrderDetail> details = outboundOrderAppService.listDetails(outboundOrderId);
         return ApiResponse.ok(MptVoAssembler.fromOutboundDetailList(
                 WmsResultAssembler.fromOutboundDetailList(details)));
@@ -82,7 +82,7 @@ public class MptOutboundOrderController extends BaseController implements Outbou
     @PostMapping(value = "/{orderNum}/vins/{vin}/loading")
     public ApiResponse<OutboundOrderDetailMpt> loading(@PathVariable String orderNum, @PathVariable String vin,
                                                        @Validated @RequestBody OutboundVinActionMptRequest request) {
-        logger.info("管理后台用户[{}]确认出库单[{}]车辆[{}]装车", WebOperators.currentOperator(), orderNum, vin);
+        log.info("管理后台用户[{}]确认出库单[{}]车辆[{}]装车", WebOperators.currentOperator(), orderNum, vin);
         OutboundOrderDetail detail = outboundOrderAppService.loadVin(new LoadVinCmd(orderNum, vin,
                 request.getRequestId(), request.getExpectedVersion(), WebOperators.currentOperator()));
         return ApiResponse.ok(MptVoAssembler.fromOutboundDetail(WmsResultAssembler.fromOutboundDetail(detail)));
@@ -94,7 +94,7 @@ public class MptOutboundOrderController extends BaseController implements Outbou
     @PostMapping(value = "/{orderNum}/vins/{vin}/outbound")
     public ApiResponse<OutboundOrderDetailMpt> outbound(@PathVariable String orderNum, @PathVariable String vin,
                                                         @Validated @RequestBody OutboundVinActionMptRequest request) {
-        logger.info("管理后台用户[{}]确认出库单[{}]车辆[{}]出库", WebOperators.currentOperator(), orderNum, vin);
+        log.info("管理后台用户[{}]确认出库单[{}]车辆[{}]出库", WebOperators.currentOperator(), orderNum, vin);
         OutboundOrderDetail detail = outboundOrderAppService.outboundVin(new OutboundVinCmd(orderNum, vin,
                 request.getRequestId(), request.getExpectedVersion(), WebOperators.currentOperator()));
         return ApiResponse.ok(MptVoAssembler.fromOutboundDetail(WmsResultAssembler.fromOutboundDetail(detail)));
@@ -106,7 +106,7 @@ public class MptOutboundOrderController extends BaseController implements Outbou
     @PostMapping(value = "/{orderNum}/cancellation")
     public ApiResponse<OutboundOrderMpt> cancellation(@PathVariable String orderNum,
                                                       @Validated @RequestBody OutboundCancellationMptRequest request) {
-        logger.info("管理后台用户[{}]取消出库单[{}]", WebOperators.currentOperator(), orderNum);
+        log.info("管理后台用户[{}]取消出库单[{}]", WebOperators.currentOperator(), orderNum);
         OutboundOrder order = outboundOrderAppService.cancel(new CancelOutboundOrderCmd(orderNum,
                 request.getRequestId(), request.getReason(), request.getExpectedVersion(),
                 WebOperators.currentOperator()));
@@ -118,6 +118,6 @@ public class MptOutboundOrderController extends BaseController implements Outbou
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, OutboundOrderMpt outboundOrder) {
-        logger.info("管理后台用户[{}]导出出库单", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]导出出库单", WebOperators.currentOperator());
     }
 }

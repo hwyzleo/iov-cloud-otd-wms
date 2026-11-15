@@ -89,7 +89,7 @@ public class InboundOrderAppService {
                     "预入库单[" + cmd.orderNum() + "]到达确认发生并发冲突或状态不符");
         }
         mptActionGuard.recordProcessed(ACTION_ARRIVAL, cmd.requestId(), cmd.orderNum());
-        logger.info("车辆[{}]预入库单[{}]确认到达", order.getVin(), order.getOrderNum());
+        log.info("车辆[{}]预入库单[{}]确认到达", order.getVin(), order.getOrderNum());
         return order;
     }
 
@@ -163,7 +163,7 @@ public class InboundOrderAppService {
                     "预入库单[" + cmd.orderNum() + "]入库确认发生并发冲突");
         }
         mptActionGuard.recordProcessed(ACTION_INBOUND, cmd.requestId(), cmd.orderNum());
-        logger.info("车辆[{}]预入库单[{}]完成入库，入库单[{}]，储位[{}/{}]", order.getVin(), order.getOrderNum(),
+        log.info("车辆[{}]预入库单[{}]完成入库，入库单[{}]，储位[{}/{}]", order.getVin(), order.getOrderNum(),
                 fact.getOrderNum(), cmd.storageAreaCode(), cmd.storageLocationCode());
         return order;
     }
@@ -191,7 +191,7 @@ public class InboundOrderAppService {
                     "预入库单[" + cmd.orderNum() + "]取消发生并发冲突");
         }
         mptActionGuard.recordProcessed(ACTION_CANCEL, cmd.requestId(), cmd.orderNum());
-        logger.info("预入库单[{}]取消，原因[{}]", cmd.orderNum(), cmd.reason());
+        log.info("预入库单[{}]取消，原因[{}]", cmd.orderNum(), cmd.reason());
         return order;
     }
 

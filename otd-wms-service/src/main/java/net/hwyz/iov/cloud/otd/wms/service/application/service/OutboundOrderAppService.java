@@ -194,7 +194,7 @@ public class OutboundOrderAppService {
         outboundFactPublisher.publishChanged(order, cmd.requestId());
         inboxRepository.insert(InboxRecords.processed(InboxRecords.OUTBOUND_COMMAND_CONSUMER, cmd.topic(),
                 cmd.eventId(), "VehicleOutboundRequested", cmd.payloadDigest(), orderNum, null));
-        logger.info("出库命令[{}]创建出库单[{}]，预留车辆{}台", cmd.requestId(), orderNum, sortedVins.size());
+        log.info("出库命令[{}]创建出库单[{}]，预留车辆{}台", cmd.requestId(), orderNum, sortedVins.size());
         return ConsumeResultDto.processed("RESERVED");
     }
 
@@ -251,7 +251,7 @@ public class OutboundOrderAppService {
         inboxRepository.insert(InboxRecords.processed(InboxRecords.OUTBOUND_COMMAND_CONSUMER, cmd.topic(),
                 cmd.eventId(), "VehicleOutboundCancellationRequested", cmd.payloadDigest(), order.getOrderNum(),
                 null));
-        logger.info("出库单[{}]按命令[{}]取消，释放车辆{}台", order.getOrderNum(), cmd.requestId(),
+        log.info("出库单[{}]按命令[{}]取消，释放车辆{}台", order.getOrderNum(), cmd.requestId(),
                 order.getDetails().size());
         return ConsumeResultDto.processed("CANCELLED");
     }
@@ -295,7 +295,7 @@ public class OutboundOrderAppService {
         }
         outboundFactPublisher.publishChanged(order, cmd.requestId());
         mptActionGuard.recordProcessed(ACTION_LOAD, cmd.requestId(), cmd.orderNum() + "/" + cmd.vin());
-        logger.info("出库单[{}]车辆[{}]确认装车，订单状态[{}]", cmd.orderNum(), cmd.vin(), order.getState());
+        log.info("出库单[{}]车辆[{}]确认装车，订单状态[{}]", cmd.orderNum(), cmd.vin(), order.getState());
         return detail;
     }
 
@@ -329,7 +329,7 @@ public class OutboundOrderAppService {
         }
         outboundFactPublisher.publishChanged(order, cmd.requestId());
         mptActionGuard.recordProcessed(ACTION_OUTBOUND, cmd.requestId(), cmd.orderNum() + "/" + cmd.vin());
-        logger.info("出库单[{}]车辆[{}]确认出库，订单状态[{}]", cmd.orderNum(), cmd.vin(), order.getState());
+        log.info("出库单[{}]车辆[{}]确认出库，订单状态[{}]", cmd.orderNum(), cmd.vin(), order.getState());
         return detail;
     }
 
@@ -364,7 +364,7 @@ public class OutboundOrderAppService {
         }
         outboundFactPublisher.publishChanged(order, cmd.requestId());
         mptActionGuard.recordProcessed(ACTION_CANCEL, cmd.requestId(), cmd.orderNum());
-        logger.info("出库单[{}]取消，释放车辆{}台", cmd.orderNum(), order.getDetails().size());
+        log.info("出库单[{}]取消，释放车辆{}台", cmd.orderNum(), order.getDetails().size());
         return order;
     }
 
@@ -385,7 +385,7 @@ public class OutboundOrderAppService {
         }
         inboxRepository.insert(InboxRecords.processed(InboxRecords.OUTBOUND_COMMAND_CONSUMER, cmd.topic(),
                 cmd.eventId(), "VehicleOutboundRequested", cmd.payloadDigest(), order.getOrderNum(), null));
-        logger.info("出库命令[{}]重复投递，复用出库单[{}]", cmd.requestId(), order.getOrderNum());
+        log.info("出库命令[{}]重复投递，复用出库单[{}]", cmd.requestId(), order.getOrderNum());
         return ConsumeResultDto.duplicate("出库单[" + order.getOrderNum() + "]已存在，返回原结果");
     }
 
@@ -396,7 +396,7 @@ public class OutboundOrderAppService {
         inboxRepository.insert(InboxRecords.businessRejected(InboxRecords.OUTBOUND_COMMAND_CONSUMER, cmd.topic(),
                 cmd.eventId(), "VehicleOutboundRequested", cmd.payloadDigest(), cmd.sourceOrderNum(), null,
                 reasonCode.getCode()));
-        logger.warn("出库命令[{}]被拒绝，原因[{}]，逐 VIN 原因{}条", cmd.requestId(), reasonCode.getCode(),
+        log.warn("出库命令[{}]被拒绝，原因[{}]，逐 VIN 原因{}条", cmd.requestId(), reasonCode.getCode(),
                 itemReasons.size());
         return ConsumeResultDto.rejected(reasonCode.getMessage());
     }

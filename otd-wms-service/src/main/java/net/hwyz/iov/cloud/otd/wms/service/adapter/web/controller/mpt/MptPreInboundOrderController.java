@@ -51,7 +51,7 @@ public class MptPreInboundOrderController extends BaseController implements PreI
     @Override
     @GetMapping(value = "/list")
     public ApiResponse<PageResult<PreInboundOrderMpt>> list(PreInboundOrderMpt preInboundOrder) {
-        logger.info("管理后台用户[{}]分页查询预入库单", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]分页查询预入库单", WebOperators.currentOperator());
         startPage();
         List<PreInboundOrder> list = preInboundOrderAppService.search(new PreInboundOrderCriteria(
                 preInboundOrder.getOrderNum(), preInboundOrder.getVin(), preInboundOrder.getWarehouseLevel(),
@@ -66,14 +66,14 @@ public class MptPreInboundOrderController extends BaseController implements PreI
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, PreInboundOrderMpt preInboundOrder) {
-        logger.info("管理后台用户[{}]导出预入库单", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]导出预入库单", WebOperators.currentOperator());
     }
 
     @RequiresPermissions("completeVehicle:warehouse:preInboundOrder:query")
     @Override
     @GetMapping(value = "/{preInboundOrderId}")
     public ApiResponse<PreInboundOrderMpt> getInfo(@PathVariable Long preInboundOrderId) {
-        logger.info("管理后台用户[{}]根据预入库单ID[{}]获取预入库单", WebOperators.currentOperator(), preInboundOrderId);
+        log.info("管理后台用户[{}]根据预入库单ID[{}]获取预入库单", WebOperators.currentOperator(), preInboundOrderId);
         PreInboundOrder order = preInboundOrderAppService.getById(preInboundOrderId);
         return ApiResponse.ok(MptVoAssembler.fromPreInbound(WmsResultAssembler.fromPreInbound(order)));
     }
@@ -84,7 +84,7 @@ public class MptPreInboundOrderController extends BaseController implements PreI
     @PostMapping(value = "/{orderNum}/arrival")
     public ApiResponse<PreInboundOrderMpt> arrival(@PathVariable String orderNum,
                                                    @Validated @RequestBody PreInboundArrivalMptRequest request) {
-        logger.info("管理后台用户[{}]确认预入库单[{}]到达", WebOperators.currentOperator(), orderNum);
+        log.info("管理后台用户[{}]确认预入库单[{}]到达", WebOperators.currentOperator(), orderNum);
         PreInboundOrder order = inboundOrderAppService.confirmArrival(new ConfirmArrivalCmd(orderNum,
                 request.getRequestId(), request.getExpectedVersion(), WebOperators.currentOperator()));
         return ApiResponse.ok(MptVoAssembler.fromPreInbound(WmsResultAssembler.fromPreInbound(order)));
@@ -96,7 +96,7 @@ public class MptPreInboundOrderController extends BaseController implements PreI
     @PostMapping(value = "/{orderNum}/inbound")
     public ApiResponse<PreInboundOrderMpt> inbound(@PathVariable String orderNum,
                                                    @Validated @RequestBody PreInboundInboundMptRequest request) {
-        logger.info("管理后台用户[{}]确认预入库单[{}]入库至储位[{}/{}]", WebOperators.currentOperator(), orderNum,
+        log.info("管理后台用户[{}]确认预入库单[{}]入库至储位[{}/{}]", WebOperators.currentOperator(), orderNum,
                 request.getStorageAreaCode(), request.getStorageLocationCode());
         PreInboundOrder order = inboundOrderAppService.confirmInbound(new ConfirmInboundCmd(orderNum,
                 request.getRequestId(), request.getStorageAreaCode(), request.getStorageLocationCode(),
@@ -110,7 +110,7 @@ public class MptPreInboundOrderController extends BaseController implements PreI
     @PostMapping(value = "/{orderNum}/cancellation")
     public ApiResponse<PreInboundOrderMpt> cancellation(@PathVariable String orderNum,
                                                         @Validated @RequestBody PreInboundCancellationMptRequest request) {
-        logger.info("管理后台用户[{}]取消预入库单[{}]", WebOperators.currentOperator(), orderNum);
+        log.info("管理后台用户[{}]取消预入库单[{}]", WebOperators.currentOperator(), orderNum);
         PreInboundOrder order = inboundOrderAppService.cancelPreInbound(new CancelPreInboundCmd(orderNum,
                 request.getRequestId(), request.getReason(), request.getExpectedVersion(),
                 WebOperators.currentOperator()));

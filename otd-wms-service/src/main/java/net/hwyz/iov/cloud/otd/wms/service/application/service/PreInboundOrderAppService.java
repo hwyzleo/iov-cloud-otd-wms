@@ -106,7 +106,7 @@ public class PreInboundOrderAppService {
                 .rowVersion(1)
                 .build();
         preInboundOrderRepository.insert(order);
-        logger.info("存量同步接口创建车辆[{}]预入库单[{}]", cmd.vin(), order.getOrderNum());
+        log.info("存量同步接口创建车辆[{}]预入库单[{}]", cmd.vin(), order.getOrderNum());
         return order;
     }
 
@@ -139,7 +139,7 @@ public class PreInboundOrderAppService {
             }
             inboxRepository.insert(InboxRecords.processed(InboxRecords.VMD_PRODUCE_CONSUMER, cmd.topic(),
                     cmd.eventId(), "VehicleProduceEvent", cmd.payloadDigest(), cmd.vin(), null));
-            logger.info("VMD 补发事件[{}]复用车辆[{}]预入库单[{}]，不新建", cmd.eventId(), cmd.vin(), order.getOrderNum());
+            log.info("VMD 补发事件[{}]复用车辆[{}]预入库单[{}]，不新建", cmd.eventId(), cmd.vin(), order.getOrderNum());
             return ConsumeResultDto.processed("REUSED");
         }
 
@@ -158,7 +158,7 @@ public class PreInboundOrderAppService {
         preInboundOrderRepository.insert(order);
         inboxRepository.insert(InboxRecords.processed(InboxRecords.VMD_PRODUCE_CONSUMER, cmd.topic(), cmd.eventId(),
                 "VehicleProduceEvent", cmd.payloadDigest(), cmd.vin(), null));
-        logger.info("消费 VMD 生产事实[{}]创建车辆[{}]预入库单[{}]", cmd.eventId(), cmd.vin(), order.getOrderNum());
+        log.info("消费 VMD 生产事实[{}]创建车辆[{}]预入库单[{}]", cmd.eventId(), cmd.vin(), order.getOrderNum());
         return ConsumeResultDto.processed("CREATED");
     }
 

@@ -20,7 +20,7 @@ public class ExPreInboundOrderServiceFallbackFactory implements FallbackFactory<
         return new ExPreInboundOrderService() {
             @Override
             public void createOrder(PreInboundOrderExService preInboundOrder) {
-                logger.error("预入库单服务创建车辆[{}]预入库单调用失败", preInboundOrder.getVin(), throwable);
+                log.error("预入库单服务创建车辆[{}]预入库单调用失败", preInboundOrder.getVin(), throwable);
             }
         };
     }

@@ -40,7 +40,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @Override
     @GetMapping(value = "/list")
     public ApiResponse<PageResult<InventoryCountMpt>> list(InventoryCountMpt inventoryCount) {
-        logger.info("管理后台用户[{}]分页查询盘点信息", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]分页查询盘点信息", WebOperators.currentOperator());
         startPage();
         List<InventoryCountPo> list = inventoryCountAppService.search(inventoryCount.getOrderNum(),
                 inventoryCount.getType(), inventoryCount.getWarehouseLevel(), inventoryCount.getWarehouseCode(),
@@ -53,7 +53,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @GetMapping(value = "/{inventoryCountOrderNum}/list")
     public ApiResponse<PageResult<InventoryCountDetailMpt>> listDetail(@PathVariable String inventoryCountOrderNum,
                                                                       InventoryCountDetailMpt inventoryCountDetail) {
-        logger.info("管理后台用户[{}]分页查询盘点[{}]明细", WebOperators.currentOperator(), inventoryCountOrderNum);
+        log.info("管理后台用户[{}]分页查询盘点[{}]明细", WebOperators.currentOperator(), inventoryCountOrderNum);
         startPage();
         List<InventoryCountDetailPo> list = inventoryCountAppService.searchDetail(inventoryCountOrderNum,
                 inventoryCountDetail.getWarehouseCode(), inventoryCountDetail.getStorageAreaCode(),
@@ -66,14 +66,14 @@ public class MptInventoryCountController extends BaseController implements Inven
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, InventoryCountMpt inventoryCount) {
-        logger.info("管理后台用户[{}]导出盘点信息", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]导出盘点信息", WebOperators.currentOperator());
     }
 
     @RequiresPermissions("completeVehicle:warehouse:inventoryCount:query")
     @Override
     @GetMapping(value = "/{inventoryCountId}")
     public ApiResponse<InventoryCountMpt> getInfo(@PathVariable Long inventoryCountId) {
-        logger.info("管理后台用户[{}]根据盘点信息ID[{}]获取盘点信息", WebOperators.currentOperator(), inventoryCountId);
+        log.info("管理后台用户[{}]根据盘点信息ID[{}]获取盘点信息", WebOperators.currentOperator(), inventoryCountId);
         return ApiResponse.ok(MptVoAssembler.fromInventoryCount(
                 inventoryCountAppService.getInventoryCountById(inventoryCountId)));
     }
@@ -83,7 +83,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @GetMapping(value = "/{inventoryCountOrderNum}/{inventoryCountDetailId}")
     public ApiResponse<InventoryCountDetailMpt> getDetailInfo(@PathVariable String inventoryCountOrderNum,
                                                              @PathVariable Long inventoryCountDetailId) {
-        logger.info("管理后台用户[{}]根据盘点[{}]明细ID[{}]获取盘点明细", WebOperators.currentOperator(),
+        log.info("管理后台用户[{}]根据盘点[{}]明细ID[{}]获取盘点明细", WebOperators.currentOperator(),
                 inventoryCountOrderNum, inventoryCountDetailId);
         return ApiResponse.ok(MptVoAssembler.fromInventoryCountDetail(
                 inventoryCountAppService.getInventoryCountDetailByOrderNumAndId(inventoryCountOrderNum,
@@ -95,7 +95,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @Override
     @PostMapping
     public ApiResponse<Void> add(@Validated @RequestBody InventoryCountMpt inventoryCount) {
-        logger.info("管理后台用户[{}]新增仓库[{}]盘点信息", WebOperators.currentOperator(),
+        log.info("管理后台用户[{}]新增仓库[{}]盘点信息", WebOperators.currentOperator(),
                 inventoryCount.getWarehouseCode());
         InventoryCountPo po = MptVoAssembler.toPo(inventoryCount);
         po.setCreateBy(WebOperators.currentOperator());
@@ -109,7 +109,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @PostMapping("/{inventoryCountOrderNum}")
     public ApiResponse<Void> addDetail(@PathVariable String inventoryCountOrderNum,
                                        @Validated @RequestBody InventoryCountDetailMpt inventoryCountDetail) {
-        logger.info("管理后台用户[{}]新增仓库盘点信息[{}]明细", WebOperators.currentOperator(), inventoryCountOrderNum);
+        log.info("管理后台用户[{}]新增仓库盘点信息[{}]明细", WebOperators.currentOperator(), inventoryCountOrderNum);
         InventoryCountDetailPo po = MptVoAssembler.toPo(inventoryCountDetail);
         po.setOrderNum(inventoryCountOrderNum);
         po.setCreateBy(WebOperators.currentOperator());
@@ -122,7 +122,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @Override
     @PutMapping
     public ApiResponse<Void> edit(@Validated @RequestBody InventoryCountMpt inventoryCount) {
-        logger.info("管理后台用户[{}]修改保存仓库[{}]盘点信息", WebOperators.currentOperator(),
+        log.info("管理后台用户[{}]修改保存仓库[{}]盘点信息", WebOperators.currentOperator(),
                 inventoryCount.getWarehouseCode());
         InventoryCountPo po = MptVoAssembler.toPo(inventoryCount);
         po.setModifyBy(WebOperators.currentOperator());
@@ -136,7 +136,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @PutMapping("/{inventoryCountOrderNum}")
     public ApiResponse<Void> editDetail(@PathVariable String inventoryCountOrderNum,
                                         @Validated @RequestBody InventoryCountDetailMpt inventoryCountDetail) {
-        logger.info("管理后台用户[{}]修改保存仓库盘点信息[{}]明细", WebOperators.currentOperator(),
+        log.info("管理后台用户[{}]修改保存仓库盘点信息[{}]明细", WebOperators.currentOperator(),
                 inventoryCountOrderNum);
         InventoryCountDetailPo po = MptVoAssembler.toPo(inventoryCountDetail);
         po.setOrderNum(inventoryCountOrderNum);
@@ -150,7 +150,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @Override
     @DeleteMapping("/{inventoryCountIds}")
     public ApiResponse<Void> remove(@PathVariable Long[] inventoryCountIds) {
-        logger.info("管理后台用户[{}]删除盘点信息[{}]", WebOperators.currentOperator(), inventoryCountIds);
+        log.info("管理后台用户[{}]删除盘点信息[{}]", WebOperators.currentOperator(), inventoryCountIds);
         return inventoryCountAppService.deleteInventoryCountByIds(inventoryCountIds) > 0
                 ? ApiResponse.ok() : ApiResponse.fail("删除盘点信息失败");
     }
@@ -161,7 +161,7 @@ public class MptInventoryCountController extends BaseController implements Inven
     @DeleteMapping("/{inventoryCountOrderNum}/{inventoryCountDetailIds}")
     public ApiResponse<Void> removeDetail(@PathVariable String inventoryCountOrderNum,
                                           @PathVariable Long[] inventoryCountDetailIds) {
-        logger.info("管理后台用户[{}]删除盘点信息[{}]下明细[{}]", WebOperators.currentOperator(),
+        log.info("管理后台用户[{}]删除盘点信息[{}]下明细[{}]", WebOperators.currentOperator(),
                 inventoryCountOrderNum, inventoryCountDetailIds);
         return inventoryCountAppService.deleteInventoryCountDetailByIds(inventoryCountOrderNum,
                 inventoryCountDetailIds) > 0 ? ApiResponse.ok() : ApiResponse.fail("删除盘点明细失败");

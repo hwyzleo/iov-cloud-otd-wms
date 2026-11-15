@@ -23,7 +23,7 @@ public class Application {
     public static void main(String[] args) {
         System.setProperty("nacos.logging.default.config.enabled", "false");
         SpringApplication.run(Application.class, args);
-        logger.info("应用启动完成");
+        log.info("应用启动完成");
     }
 
 }

@@ -44,7 +44,7 @@ public class MptInventoryTransferController extends BaseController implements In
     @Override
     @GetMapping(value = "/list")
     public ApiResponse<PageResult<InventoryTransferMpt>> list(InventoryTransferMpt inventoryTransfer) {
-        logger.info("管理后台用户[{}]分页查询移库信息", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]分页查询移库信息", WebOperators.currentOperator());
         startPage();
         List<InventoryTransferRecord> list = inventoryTransferAppService.search(new InventoryTransferCriteria(
                 inventoryTransfer.getVin(), inventoryTransfer.getWarehouseLevel(),
@@ -59,14 +59,14 @@ public class MptInventoryTransferController extends BaseController implements In
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, InventoryTransferMpt inventoryTransfer) {
-        logger.info("管理后台用户[{}]导出移库信息", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]导出移库信息", WebOperators.currentOperator());
     }
 
     @RequiresPermissions("completeVehicle:warehouse:inventoryTransfer:query")
     @Override
     @GetMapping(value = "/{inventoryTransferId}")
     public ApiResponse<InventoryTransferMpt> getInfo(@PathVariable Long inventoryTransferId) {
-        logger.info("管理后台用户[{}]根据移库信息ID[{}]获取移库信息", WebOperators.currentOperator(), inventoryTransferId);
+        log.info("管理后台用户[{}]根据移库信息ID[{}]获取移库信息", WebOperators.currentOperator(), inventoryTransferId);
         InventoryTransferRecord record = inventoryTransferAppService.getById(inventoryTransferId);
         return ApiResponse.ok(MptVoAssembler.fromTransfer(WmsResultAssembler.fromTransfer(record)));
     }
@@ -76,7 +76,7 @@ public class MptInventoryTransferController extends BaseController implements In
     @Override
     @PostMapping
     public ApiResponse<InventoryTransferMpt> transfer(@Validated @RequestBody InventoryTransferMptRequest request) {
-        logger.info("管理后台用户[{}]车辆[{}]同仓移储至[{}/{}]", WebOperators.currentOperator(), request.getVin(),
+        log.info("管理后台用户[{}]车辆[{}]同仓移储至[{}/{}]", WebOperators.currentOperator(), request.getVin(),
                 request.getNewStorageAreaCode(), request.getNewStorageLocationCode());
         InventoryTransferRecord record = inventoryTransferAppService.transfer(new TransferInventoryCmd(
                 request.getRequestId(), request.getVin(), request.getWarehouseCode(),

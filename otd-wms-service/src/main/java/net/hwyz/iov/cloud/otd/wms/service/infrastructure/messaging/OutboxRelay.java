@@ -46,7 +46,7 @@ public class OutboxRelay {
         if (records.isEmpty()) {
             return;
         }
-        logger.info("Outbox 中继扫描到 {} 条待发布记录", records.size());
+        log.info("Outbox 中继扫描到 {} 条待发布记录", records.size());
         for (OutboxRecord record : records) {
             relayOne(record);
         }
@@ -67,7 +67,7 @@ public class OutboxRelay {
             kafkaTemplate.send(record.getTopic(), record.getMessageKey(), record.getPayload())
                     .get(30, TimeUnit.SECONDS);
             outboxRepository.markPublished(record.getId());
-            logger.info("Outbox 发布成功: eventId={}, topic={}, key={}", record.getEventId(), record.getTopic(),
+            log.info("Outbox 发布成功: eventId={}, topic={}, key={}", record.getEventId(), record.getTopic(),
                     record.getMessageKey());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -87,13 +87,13 @@ public class OutboxRelay {
         Date nextRetryTime = new Date(System.currentTimeMillis()
                 + outboxProperties.getRetryIntervalSeconds() * 1000L);
         outboxRepository.markRetryable(record.getId(), retryCount, nextRetryTime, error);
-        logger.warn("Outbox 发布失败，安排重试: eventId={}, retryCount={}, nextRetryTime={}, error={}",
+        log.warn("Outbox 发布失败，安排重试: eventId={}, retryCount={}, nextRetryTime={}, error={}",
                 record.getEventId(), retryCount, nextRetryTime, error);
     }
 
     private void markDead(OutboxRecord record, String error) {
         outboxRepository.markDead(record.getId(), truncate(error));
-        logger.error("Outbox 记录置 DEAD: eventId={}, error={}", record.getEventId(), error);
+        log.error("Outbox 记录置 DEAD: eventId={}, error={}", record.getEventId(), error);
     }
 
     private String truncate(String error) {

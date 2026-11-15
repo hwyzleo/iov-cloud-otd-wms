@@ -41,7 +41,7 @@ public class MptInventoryController extends BaseController implements InventoryM
     @Override
     @GetMapping(value = "/list")
     public ApiResponse<PageResult<InventoryMpt>> list(InventoryMpt inventory) {
-        logger.info("管理后台用户[{}]分页查询库存", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]分页查询库存", WebOperators.currentOperator());
         startPage();
         List<VehicleInventory> list = inventoryAppService.search(new InventoryCriteria(
                 inventory.getVin(), inventory.getWarehouseLevel(), inventory.getWarehouseCode(),
@@ -56,14 +56,14 @@ public class MptInventoryController extends BaseController implements InventoryM
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, InventoryMpt inventory) {
-        logger.info("管理后台用户[{}]导出库存", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]导出库存", WebOperators.currentOperator());
     }
 
     @RequiresPermissions("completeVehicle:warehouse:inventory:query")
     @Override
     @GetMapping(value = "/{inventoryId}")
     public ApiResponse<InventoryMpt> getInfo(@PathVariable Long inventoryId) {
-        logger.info("管理后台用户[{}]根据库存ID[{}]获取库存", WebOperators.currentOperator(), inventoryId);
+        log.info("管理后台用户[{}]根据库存ID[{}]获取库存", WebOperators.currentOperator(), inventoryId);
         VehicleInventory inventory = inventoryAppService.getById(inventoryId);
         return ApiResponse.ok(MptVoAssembler.fromInventory(WmsResultAssembler.fromInventory(inventory)));
     }

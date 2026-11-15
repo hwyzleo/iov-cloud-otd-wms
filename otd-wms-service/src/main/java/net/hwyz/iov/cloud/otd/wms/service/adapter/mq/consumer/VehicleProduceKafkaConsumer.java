@@ -72,7 +72,7 @@ public class VehicleProduceKafkaConsumer {
             Optional<InboxRecord> recorded = preInboundOrderAppService.findRecordedProduceResult(topic,
                     message.eventId());
             if (recorded.isPresent()) {
-                logger.info("事件[{}]并发重复投递，按已记录结果确认", message.eventId());
+                log.info("事件[{}]并发重复投递，按已记录结果确认", message.eventId());
                 return;
             }
             throw e;
@@ -80,7 +80,7 @@ public class VehicleProduceKafkaConsumer {
         if (result.outcome() == net.hwyz.iov.cloud.otd.wms.service.common.enums.ConsumeOutcome.DEAD_LETTER) {
             throw new NonRetryableConsumeException(result.detail());
         }
-        logger.info("VMD 生产事件[{}]处理结果: {}, detail={}", message.eventId(), result.outcome(), result.detail());
+        log.info("VMD 生产事件[{}]处理结果: {}, detail={}", message.eventId(), result.outcome(), result.detail());
     }
 
     private VehicleProducedMessage parse(ConsumerRecord<String, String> record, String topic, String payloadDigest) {
@@ -118,7 +118,7 @@ public class VehicleProduceKafkaConsumer {
                     net.hwyz.iov.cloud.otd.wms.service.common.exception.WmsErrorCode.MESSAGE_INVALID.getCode(),
                     message));
         } catch (DuplicateKeyException e) {
-            logger.info("非法消息[{}]已记录死信", eventId);
+            log.info("非法消息[{}]已记录死信", eventId);
         }
     }
 

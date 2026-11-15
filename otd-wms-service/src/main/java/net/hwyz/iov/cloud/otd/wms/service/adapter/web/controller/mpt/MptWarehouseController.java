@@ -45,7 +45,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @GetMapping(value = "/list")
     public ApiResponse<PageResult<WarehouseMpt>> list(WarehouseMpt warehouse) {
-        logger.info("管理后台用户[{}]分页查询仓库信息", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]分页查询仓库信息", WebOperators.currentOperator());
         startPage();
         List<WarehouseDto> list = warehouseAppService.search(warehouse.getCode(), warehouse.getName(),
                 warehouse.getWarehouseLevel(), getBeginTime(warehouse), getEndTime(warehouse));
@@ -56,7 +56,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @GetMapping(value = "/listByLevel")
     public List<WarehouseMpt> listByLevel(@RequestParam String warehouseLevel) {
-        logger.info("管理后台用户[{}]根据仓库层级[{}]获取仓库列表", WebOperators.currentOperator(), warehouseLevel);
+        log.info("管理后台用户[{}]根据仓库层级[{}]获取仓库列表", WebOperators.currentOperator(), warehouseLevel);
         return MptVoAssembler.fromWarehouseList(warehouseAppService.search(null, null, warehouseLevel, null, null));
     }
 
@@ -64,7 +64,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @GetMapping(value = "/{warehouseId}/storageArea")
     public List<StorageAreaMpt> listWarehouseStorageArea(@PathVariable Long warehouseId) {
-        logger.info("管理后台用户[{}]根据仓库ID[{}]获取仓库存储区域", WebOperators.currentOperator(), warehouseId);
+        log.info("管理后台用户[{}]根据仓库ID[{}]获取仓库存储区域", WebOperators.currentOperator(), warehouseId);
         return MptVoAssembler.fromStorageAreaList(warehouseAppService.listStorageAreaByWarehouseId(warehouseId));
     }
 
@@ -73,7 +73,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @GetMapping(value = "/{warehouseId}/storageArea/{storageAreaId}/storageLocation")
     public List<StorageLocationMpt> listWarehouseStorageAreaStorageLocation(@PathVariable Long warehouseId,
                                                                            @PathVariable Long storageAreaId) {
-        logger.info("管理后台用户[{}]根据仓库ID[{}]和存储区域ID[{}]获取储位", WebOperators.currentOperator(),
+        log.info("管理后台用户[{}]根据仓库ID[{}]和存储区域ID[{}]获取储位", WebOperators.currentOperator(),
                 warehouseId, storageAreaId);
         return MptVoAssembler.fromStorageLocationList(
                 warehouseAppService.listStorageLocationByWarehouseIdAndStorageAreaId(warehouseId, storageAreaId));
@@ -84,14 +84,14 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, WarehouseMpt warehouse) {
-        logger.info("管理后台用户[{}]导出仓库信息", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]导出仓库信息", WebOperators.currentOperator());
     }
 
     @RequiresPermissions("completeVehicle:warehouse:info:query")
     @Override
     @GetMapping(value = "/{warehouseId}")
     public ApiResponse<WarehouseMpt> getInfo(@PathVariable Long warehouseId) {
-        logger.info("管理后台用户[{}]根据仓库ID[{}]获取仓库信息", WebOperators.currentOperator(), warehouseId);
+        log.info("管理后台用户[{}]根据仓库ID[{}]获取仓库信息", WebOperators.currentOperator(), warehouseId);
         return ApiResponse.ok(MptVoAssembler.fromWarehouse(warehouseAppService.getWarehouseById(warehouseId)));
     }
 
@@ -100,7 +100,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @PostMapping
     public ApiResponse<Void> add(@Validated @RequestBody WarehouseMpt warehouse) {
-        logger.info("管理后台用户[{}]新增仓库信息[{}]", WebOperators.currentOperator(), warehouse.getCode());
+        log.info("管理后台用户[{}]新增仓库信息[{}]", WebOperators.currentOperator(), warehouse.getCode());
         if (!warehouseAppService.checkCodeUnique(warehouse.getId(), warehouse.getCode())) {
             return ApiResponse.fail("新增仓库'" + warehouse.getCode() + "'失败，仓库代码已存在");
         }
@@ -115,7 +115,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @PostMapping("/{warehouseId}/storageArea")
     public ApiResponse<Void> addStorageArea(@PathVariable Long warehouseId,
                                             @Validated @RequestBody StorageAreaMpt storageArea) {
-        logger.info("管理后台用户[{}]新增仓库[{}]储区[{}]", WebOperators.currentOperator(), warehouseId,
+        log.info("管理后台用户[{}]新增仓库[{}]储区[{}]", WebOperators.currentOperator(), warehouseId,
                 storageArea.getCode());
         if (!warehouseAppService.checkStorageAreaCodeUnique(storageArea.getId(), MptVoAssembler.toPo(storageArea))) {
             return ApiResponse.fail("储区代码'" + storageArea.getCode() + "'在本仓库内已存在");
@@ -131,7 +131,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @PostMapping("/{warehouseId}/storageArea/{storageAreaId}/storageLocation")
     public ApiResponse<Void> addStorageLocation(@PathVariable Long warehouseId, @PathVariable Long storageAreaId,
                                                 @Validated @RequestBody StorageLocationMpt storageLocation) {
-        logger.info("管理后台用户[{}]新增仓库[{}]储区[{}]储位[{}]", WebOperators.currentOperator(), warehouseId,
+        log.info("管理后台用户[{}]新增仓库[{}]储区[{}]储位[{}]", WebOperators.currentOperator(), warehouseId,
                 storageAreaId, storageLocation.getCode());
         if (!warehouseAppService.checkStorageLocationCodeUnique(storageLocation.getId(),
                 MptVoAssembler.toPo(storageLocation))) {
@@ -147,7 +147,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @PutMapping
     public ApiResponse<Void> edit(@Validated @RequestBody WarehouseMpt warehouse) {
-        logger.info("管理后台用户[{}]修改保存仓库信息[{}]", WebOperators.currentOperator(), warehouse.getCode());
+        log.info("管理后台用户[{}]修改保存仓库信息[{}]", WebOperators.currentOperator(), warehouse.getCode());
         if (!warehouseAppService.checkCodeUnique(warehouse.getId(), warehouse.getCode())) {
             return ApiResponse.fail("修改保存仓库'" + warehouse.getCode() + "'失败，仓库代码已存在");
         }
@@ -162,7 +162,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @PutMapping("/{warehouseId}/storageArea")
     public ApiResponse<Void> editStorageArea(@PathVariable Long warehouseId,
                                              @Validated @RequestBody StorageAreaMpt storageArea) {
-        logger.info("管理后台用户[{}]修改保存仓库[{}]储区[{}]", WebOperators.currentOperator(), warehouseId,
+        log.info("管理后台用户[{}]修改保存仓库[{}]储区[{}]", WebOperators.currentOperator(), warehouseId,
                 storageArea.getCode());
         if (!warehouseAppService.checkStorageAreaCodeUnique(storageArea.getId(), MptVoAssembler.toPo(storageArea))) {
             return ApiResponse.fail("储区代码'" + storageArea.getCode() + "'在本仓库内已存在");
@@ -178,7 +178,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @PutMapping("/{warehouseId}/storageArea/{storageAreaId}/storageLocation")
     public ApiResponse<Void> editStorageLocation(@PathVariable Long warehouseId, @PathVariable Long storageAreaId,
                                                  @Validated @RequestBody StorageLocationMpt storageLocation) {
-        logger.info("管理后台用户[{}]修改保存仓库[{}]储区[{}]储位[{}]", WebOperators.currentOperator(), warehouseId,
+        log.info("管理后台用户[{}]修改保存仓库[{}]储区[{}]储位[{}]", WebOperators.currentOperator(), warehouseId,
                 storageAreaId, storageLocation.getCode());
         if (!warehouseAppService.checkStorageLocationCodeUnique(storageLocation.getId(),
                 MptVoAssembler.toPo(storageLocation))) {
@@ -194,7 +194,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @DeleteMapping("/{warehouseIds}")
     public ApiResponse<Void> remove(@PathVariable Long[] warehouseIds) {
-        logger.info("管理后台用户[{}]删除仓库信息[{}]", WebOperators.currentOperator(), warehouseIds);
+        log.info("管理后台用户[{}]删除仓库信息[{}]", WebOperators.currentOperator(), warehouseIds);
         return warehouseAppService.deleteWarehouseByIds(warehouseIds) > 0
                 ? ApiResponse.ok() : ApiResponse.fail("删除仓库失败");
     }
@@ -204,7 +204,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @Override
     @DeleteMapping("/{warehouseId}/storageArea/{storageAreaIds}")
     public ApiResponse<Void> removeStorageArea(@PathVariable Long warehouseId, @PathVariable Long[] storageAreaIds) {
-        logger.info("管理后台用户[{}]删除仓库[{}]储区[{}]", WebOperators.currentOperator(), warehouseId,
+        log.info("管理后台用户[{}]删除仓库[{}]储区[{}]", WebOperators.currentOperator(), warehouseId,
                 storageAreaIds);
         return warehouseAppService.deleteStorageAreaByIds(warehouseId, storageAreaIds) > 0
                 ? ApiResponse.ok() : ApiResponse.fail("删除储区失败");
@@ -216,7 +216,7 @@ public class MptWarehouseController extends BaseController implements WarehouseM
     @DeleteMapping("/{warehouseId}/storageArea/{storageAreaId}/storageLocation/{storageLocationIds}")
     public ApiResponse<Void> removeStorageLocation(@PathVariable Long warehouseId, @PathVariable Long storageAreaId,
                                                    @PathVariable Long[] storageLocationIds) {
-        logger.info("管理后台用户[{}]删除仓库[{}]储区[{}]储位[{}]", WebOperators.currentOperator(), warehouseId,
+        log.info("管理后台用户[{}]删除仓库[{}]储区[{}]储位[{}]", WebOperators.currentOperator(), warehouseId,
                 storageAreaId, storageLocationIds);
         return warehouseAppService.deleteStorageLocationByIds(warehouseId, storageAreaId, storageLocationIds) > 0
                 ? ApiResponse.ok() : ApiResponse.fail("删除储位失败");

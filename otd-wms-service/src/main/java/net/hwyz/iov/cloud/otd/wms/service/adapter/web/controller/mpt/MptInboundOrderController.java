@@ -41,7 +41,7 @@ public class MptInboundOrderController extends BaseController implements Inbound
     @Override
     @GetMapping(value = "/list")
     public ApiResponse<PageResult<InboundOrderMpt>> list(InboundOrderMpt inboundOrder) {
-        logger.info("管理后台用户[{}]分页查询入库单", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]分页查询入库单", WebOperators.currentOperator());
         startPage();
         List<InboundOrderFact> list = inboundOrderAppService.search(new InboundOrderCriteria(
                 inboundOrder.getOrderNum(), inboundOrder.getPreOrderNum(), inboundOrder.getVin(),
@@ -56,14 +56,14 @@ public class MptInboundOrderController extends BaseController implements Inbound
     @Override
     @PostMapping("/export")
     public void export(HttpServletResponse response, InboundOrderMpt inboundOrder) {
-        logger.info("管理后台用户[{}]导出入库单", WebOperators.currentOperator());
+        log.info("管理后台用户[{}]导出入库单", WebOperators.currentOperator());
     }
 
     @RequiresPermissions("completeVehicle:warehouse:inboundOrder:query")
     @Override
     @GetMapping(value = "/{inboundOrderId}")
     public ApiResponse<InboundOrderMpt> getInfo(@PathVariable Long inboundOrderId) {
-        logger.info("管理后台用户[{}]根据入库单ID[{}]获取入库单", WebOperators.currentOperator(), inboundOrderId);
+        log.info("管理后台用户[{}]根据入库单ID[{}]获取入库单", WebOperators.currentOperator(), inboundOrderId);
         InboundOrderFact fact = inboundOrderAppService.getById(inboundOrderId);
         return ApiResponse.ok(MptVoAssembler.fromInbound(WmsResultAssembler.fromInbound(fact)));
     }

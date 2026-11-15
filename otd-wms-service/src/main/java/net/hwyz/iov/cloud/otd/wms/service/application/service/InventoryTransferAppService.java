@@ -124,7 +124,7 @@ public class InventoryTransferAppService {
         }
         InventoryTransferRecord persisted = inventoryTransferRepository.findByRequestId(cmd.requestId())
                 .orElse(record);
-        logger.info("车辆[{}]由储位[{}/{}]移储至[{}/{}]", cmd.vin(), inventory.getStorageAreaCode(),
+        log.info("车辆[{}]由储位[{}/{}]移储至[{}/{}]", cmd.vin(), inventory.getStorageAreaCode(),
                 inventory.getStorageLocationCode(), cmd.newStorageAreaCode(), cmd.newStorageLocationCode());
         return persisted;
     }

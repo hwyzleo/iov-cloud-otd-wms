@@ -34,7 +34,7 @@ public class ServicePreInboundOrderController {
      */
     @PostMapping()
     void createOrder(@RequestBody @Validated PreInboundOrderExService preInboundOrder) {
-        logger.info("存量同步接口创建车辆[{}]预入库单", preInboundOrder.getVin());
+        log.info("存量同步接口创建车辆[{}]预入库单", preInboundOrder.getVin());
         preInboundOrderAppService.createPreInbound(new CreatePreInboundCmd(preInboundOrder.getVin(),
                 preInboundOrder.getBuildConfigCode(), preInboundOrder.getWarehouseCode(),
                 preInboundOrder.getWarehouseLevel(), preInboundOrder.getEstimatedArrivalTime(),
