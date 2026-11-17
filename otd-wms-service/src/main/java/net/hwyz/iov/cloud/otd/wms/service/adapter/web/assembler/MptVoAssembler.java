@@ -89,6 +89,7 @@ public final class MptVoAssembler {
                 .storageAreaCode(dto.storageAreaCode())
                 .storageLocationCode(dto.storageLocationCode())
                 .inboundTime(dto.inboundTime())
+                .inboundBy(operatorId(dto.inboundBy()))
                 .createTime(dto.createTime())
                 .build();
     }
@@ -141,6 +142,7 @@ public final class MptVoAssembler {
                 .newStorageAreaCode(dto.newStorageAreaCode())
                 .newStorageLocationCode(dto.newStorageLocationCode())
                 .transferTime(dto.transferTime())
+                .transferBy(operatorId(dto.transferBy()))
                 .createTime(dto.createTime())
                 .build();
     }
@@ -372,6 +374,25 @@ public final class MptVoAssembler {
                 .startTime(vo.getStartTime())
                 .endTime(vo.getEndTime())
                 .build();
+    }
+
+    /**
+     * 操作人标识转换：领域／DTO 使用字符串，MPT VO 沿用 Long。
+     * <p>
+     * 非数字标识（异常场景）按空处理，不影响查询主流程。
+     *
+     * @param operator 操作人标识
+     * @return Long 操作人
+     */
+    private static Long operatorId(String operator) {
+        if (operator == null || operator.isBlank()) {
+            return null;
+        }
+        try {
+            return Long.valueOf(operator);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     public static InventoryCountDetailPo toPo(InventoryCountDetailMpt vo) {
