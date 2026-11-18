@@ -31,6 +31,9 @@ mybatis-plus:
   mapper-locations: classpath*:mappers/**/*.xml
 
 wms:
+  event:
+    # 出站事件时间时区（ISO-8601 偏移来源），OTD-WMS-DSN-CR-002
+    time-zone: ${WMS_EVENT_TIME_ZONE:Asia/Shanghai}
   default-warehouse:
     # 未显式指定仓库时使用的缺省仓库代码；为空表示必须显式指定（否则 302002）
     code: ${WMS_DEFAULT_WAREHOUSE_CODE:}

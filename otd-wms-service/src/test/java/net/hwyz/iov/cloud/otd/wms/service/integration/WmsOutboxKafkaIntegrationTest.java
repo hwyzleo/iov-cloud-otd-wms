@@ -101,7 +101,9 @@ class WmsOutboxKafkaIntegrationTest extends AbstractWmsIntegrationTest {
                         found = true;
                         assertThat(record.key()).isEqualTo(orderNum);
                         assertThat(record.value()).contains("VehicleOutboundChangedEvent")
-                                .contains("\"schemaVersion\":1");
+                                .contains("\"schemaVersion\":2")
+                                .doesNotContain("occurredAtEpochMillis")
+                                .containsPattern("\"occurredAt\":\"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}[+-]\\d{2}:\\d{2}\"");
                     }
                 }
             }

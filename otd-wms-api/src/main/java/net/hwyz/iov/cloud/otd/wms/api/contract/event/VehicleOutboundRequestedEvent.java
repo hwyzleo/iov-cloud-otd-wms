@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 通用出库命令（外部请求方 → WMS，schemaVersion=1）
+ * 通用出库命令（外部请求方 → WMS，schemaVersion=2）
  * <p>
  * 消息 Key 为 {@code sourceOrderNum}；重试不得通过改变来源引用定位另一张订单。
  *
@@ -31,14 +31,14 @@ public class VehicleOutboundRequestedEvent {
     private String eventType;
 
     /**
-     * 载荷版本，固定为 1
+     * 载荷版本，固定为 2
      */
     private Integer schemaVersion;
 
     /**
-     * 事件发生时间（epoch 毫秒）
+     * 事件发生时间（ISO-8601，带偏移，固定 3 位毫秒）
      */
-    private Long occurredAtEpochMillis;
+    private String occurredAt;
 
     /**
      * 生产者标识

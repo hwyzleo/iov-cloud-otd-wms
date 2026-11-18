@@ -43,6 +43,10 @@ public class VehicleOutboundCommandKafkaConsumer {
     private static final String EVENT_REQUESTED = "VehicleOutboundRequested";
     private static final String EVENT_CANCELLATION = "VehicleOutboundCancellationRequested";
     private static final String COMMAND_OPERATOR = "KAFKA_COMMAND";
+    /**
+     * 命令信封载荷版本（OTD-WMS-DSN-CR-002：时间字段 ISO-8601，由 1 升为 2）
+     */
+    private static final int COMMAND_SCHEMA_VERSION = 2;
 
     private final OutboundOrderAppService outboundOrderAppService;
     private final InboxRepository inboxRepository;
@@ -75,9 +79,9 @@ public class VehicleOutboundCommandKafkaConsumer {
         String eventType = text(root, "eventType");
         Integer schemaVersion = root.hasNonNull("schemaVersion") ? root.get("schemaVersion").asInt() : null;
         if (eventId == null || eventId.isBlank() || eventType == null || schemaVersion == null
-                || schemaVersion != 1) {
-            deadLetter(topic, record, payloadDigest, "事件信封或 schemaVersion 非法");
-            throw new NonRetryableConsumeException("事件信封或 schemaVersion 非法");
+                || schemaVersion != COMMAND_SCHEMA_VERSION) {
+            deadLetter(topic, record, payloadDigest, "事件信封或 schemaVersion 非法（要求 schemaVersion=" + COMMAND_SCHEMA_VERSION + "）");
+            throw new NonRetryableConsumeException("事件信封或 schemaVersion 非法（要求 schemaVersion=" + COMMAND_SCHEMA_VERSION + "）");
         }
         JsonNode payload = root.path("payload");
 

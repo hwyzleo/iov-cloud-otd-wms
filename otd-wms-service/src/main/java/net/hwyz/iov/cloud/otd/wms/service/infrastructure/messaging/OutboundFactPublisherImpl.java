@@ -1,21 +1,22 @@
 package net.hwyz.iov.cloud.otd.wms.service.infrastructure.messaging;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.hwyz.iov.cloud.framework.common.util.ExplicitTimeUtil;
 import net.hwyz.iov.cloud.otd.wms.api.contract.event.VehicleOutboundChangedEvent;
 import net.hwyz.iov.cloud.otd.wms.api.contract.event.VehicleOutboundCommandRejectedEvent;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.ItemReasonDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.port.OutboundFactPublisher;
 import net.hwyz.iov.cloud.otd.wms.service.common.enums.OutboxPublishState;
+import net.hwyz.iov.cloud.otd.wms.service.common.util.WmsEventTime;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.OutboundOrder;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.entity.OutboxRecord;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.entity.OutboundOrderDetail;
 import net.hwyz.iov.cloud.otd.wms.service.domain.repository.OutboxRepository;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.messaging.kafka.WmsKafkaTopicRoutes;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,6 @@ import java.util.UUID;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class OutboundFactPublisherImpl implements OutboundFactPublisher {
 
     /**
@@ -48,13 +48,24 @@ public class OutboundFactPublisherImpl implements OutboundFactPublisher {
      */
     private static final String AGGREGATE_TYPE = "OUTBOUND_ORDER";
     /**
-     * 载荷版本
+     * 载荷版本（OTD-WMS-DSN-CR-002：时间字段 ISO-8601，由 1 升为 2）
      */
-    private static final int SCHEMA_VERSION = 1;
+    private static final int SCHEMA_VERSION = 2;
 
     private final OutboxRepository outboxRepository;
     private final WmsKafkaTopicRoutes topicRoutes;
-    private final ObjectMapper objectMapper;
+    /**
+     * 出站事件时间时区（ISO-8601 偏移来源）
+     */
+    private final ZoneId eventZone;
+
+    public OutboundFactPublisherImpl(OutboxRepository outboxRepository,
+                                     WmsKafkaTopicRoutes topicRoutes,
+                                     @Value("${wms.event.time-zone:Asia/Shanghai}") String eventTimeZone) {
+        this.outboxRepository = outboxRepository;
+        this.topicRoutes = topicRoutes;
+        this.eventZone = ZoneId.of(eventTimeZone);
+    }
 
     @Override
     public void publishChanged(OutboundOrder order, String requestId) {
@@ -62,7 +73,7 @@ public class OutboundFactPublisherImpl implements OutboundFactPublisher {
                 .eventId(UUID.randomUUID().toString())
                 .eventType(EVENT_TYPE_CHANGED)
                 .schemaVersion(SCHEMA_VERSION)
-                .occurredAtEpochMillis(System.currentTimeMillis())
+                .occurredAt(WmsEventTime.format(ExplicitTimeUtil.nowInstant(), eventZone))
                 .producer(PRODUCER)
                 .aggregateVersion(order.getAggregateVersion())
                 .payload(VehicleOutboundChangedEvent.Payload.builder()
@@ -88,7 +99,7 @@ public class OutboundFactPublisherImpl implements OutboundFactPublisher {
                 .eventId(UUID.randomUUID().toString())
                 .eventType(EVENT_TYPE_REJECTED)
                 .schemaVersion(SCHEMA_VERSION)
-                .occurredAtEpochMillis(System.currentTimeMillis())
+                .occurredAt(WmsEventTime.format(ExplicitTimeUtil.nowInstant(), eventZone))
                 .producer(PRODUCER)
                 .aggregateVersion(aggregateVersion)
                 .payload(VehicleOutboundCommandRejectedEvent.Payload.builder()
@@ -115,25 +126,16 @@ public class OutboundFactPublisherImpl implements OutboundFactPublisher {
         return VehicleOutboundChangedEvent.Item.builder()
                 .vin(detail.getVin())
                 .state(detail.getState() == null ? null : detail.getState().name())
-                .reserveTimeEpochMillis(epochMillis(detail.getReserveTime()))
-                .loadTimeEpochMillis(epochMillis(detail.getLoadTime()))
-                .outboundTimeEpochMillis(epochMillis(detail.getOutboundTime()))
-                .releaseTimeEpochMillis(epochMillis(detail.getReleaseTime()))
+                .reserveTime(WmsEventTime.format(detail.getReserveTime(), eventZone))
+                .loadTime(WmsEventTime.format(detail.getLoadTime(), eventZone))
+                .outboundTime(WmsEventTime.format(detail.getOutboundTime(), eventZone))
+                .releaseTime(WmsEventTime.format(detail.getReleaseTime(), eventZone))
                 .build();
-    }
-
-    private Long epochMillis(java.util.Date date) {
-        return date == null ? null : date.getTime();
     }
 
     private void insertOutbox(String eventId, String eventType, String aggregateId, long aggregateVersion,
                               String messageKey, Object event) {
-        String payload;
-        try {
-            payload = objectMapper.writeValueAsString(event);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("出库事件序列化失败: " + eventType, e);
-        }
+        String payload = WmsEventPayloadSerializer.write(event);
         outboxRepository.insert(OutboxRecord.builder()
                 .eventId(eventId)
                 .eventType(eventType)

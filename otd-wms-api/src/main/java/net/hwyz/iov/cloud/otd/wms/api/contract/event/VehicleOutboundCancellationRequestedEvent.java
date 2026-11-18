@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 通用出库取消命令（外部请求方 → WMS，schemaVersion=1）
+ * 通用出库取消命令（外部请求方 → WMS，schemaVersion=2）
  * <p>
  * 使用 {@code requestId}、{@code sourceSystem}、{@code sourceOrderNum} 定位订单；
  * 重试时不得通过改变来源引用定位另一张订单。
@@ -30,14 +30,14 @@ public class VehicleOutboundCancellationRequestedEvent {
     private String eventType;
 
     /**
-     * 载荷版本，固定为 1
+     * 载荷版本，固定为 2
      */
     private Integer schemaVersion;
 
     /**
-     * 事件发生时间（epoch 毫秒）
+     * 事件发生时间（ISO-8601，带偏移，固定 3 位毫秒）
      */
-    private Long occurredAtEpochMillis;
+    private String occurredAt;
 
     /**
      * 生产者标识

@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * WMS 出库事实事件（WMS → 任意消费者，schemaVersion=1）
+ * WMS 出库事实事件（WMS → 任意消费者，schemaVersion=2）
  * <p>
  * 消息 Key：有 WMS 订单时为 {@code outboundOrderNum}。
  * 消费者按 {@code eventId} 去重，状态投影只应用大于当前版本的 {@code aggregateVersion}。
+ * <p>
+ * 时间字段统一 ISO-8601（带时区偏移、固定 3 位毫秒），见 OTD-WMS-DSN-CR-002。
  *
  * @author hwyz_leo
  */
@@ -32,14 +34,14 @@ public class VehicleOutboundChangedEvent {
     private String eventType;
 
     /**
-     * 载荷版本，固定为 1
+     * 载荷版本，固定为 2
      */
     private Integer schemaVersion;
 
     /**
-     * 事件发生时间（epoch 毫秒）
+     * 事件发生时间（ISO-8601，带偏移，固定 3 位毫秒）
      */
-    private Long occurredAtEpochMillis;
+    private String occurredAt;
 
     /**
      * 生产者标识
@@ -121,23 +123,23 @@ public class VehicleOutboundChangedEvent {
         private String state;
 
         /**
-         * 预留时间（epoch 毫秒）
+         * 预留时间（ISO-8601）
          */
-        private Long reserveTimeEpochMillis;
+        private String reserveTime;
 
         /**
-         * 装车时间（epoch 毫秒）
+         * 装车时间（ISO-8601）
          */
-        private Long loadTimeEpochMillis;
+        private String loadTime;
 
         /**
-         * 出库时间（epoch 毫秒）
+         * 出库时间（ISO-8601）
          */
-        private Long outboundTimeEpochMillis;
+        private String outboundTime;
 
         /**
-         * 释放时间（epoch 毫秒）
+         * 释放时间（ISO-8601）
          */
-        private Long releaseTimeEpochMillis;
+        private String releaseTime;
     }
 }

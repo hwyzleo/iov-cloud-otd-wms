@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * WMS 出库命令拒绝事件（WMS → 任意消费者，schemaVersion=1）
+ * WMS 出库命令拒绝事件（WMS → 任意消费者，schemaVersion=2）
  * <p>
  * 合法业务拒绝是已完成处理结果；该事件不改变库存或订单状态，也不推进聚合版本。
  *
@@ -31,14 +31,14 @@ public class VehicleOutboundCommandRejectedEvent {
     private String eventType;
 
     /**
-     * 载荷版本，固定为 1
+     * 载荷版本，固定为 2
      */
     private Integer schemaVersion;
 
     /**
-     * 事件发生时间（epoch 毫秒）
+     * 事件发生时间（ISO-8601，带偏移，固定 3 位毫秒）
      */
-    private Long occurredAtEpochMillis;
+    private String occurredAt;
 
     /**
      * 生产者标识
