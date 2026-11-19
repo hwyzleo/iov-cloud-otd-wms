@@ -67,6 +67,37 @@ public interface InventoryRepository {
     int markOutbound(String vin, String orderNum, String operator, Date now);
 
     /**
+     * 进入待入库：OUTBOUND → IN_TRANSIT，记录目标交付库
+     *
+     * @param vin                 车架号
+     * @param targetWarehouseCode 目标交付库代码
+     * @return 影响行数
+     */
+    int markInTransit(String vin, String targetWarehouseCode);
+
+    /**
+     * 取消待入库：IN_TRANSIT → OUTBOUND
+     *
+     * @param vin 车架号
+     * @return 影响行数
+     */
+    int releaseInTransit(String vin);
+
+    /**
+     * 交付库入库：IN_TRANSIT → AVAILABLE，目标仓库转正并占用储位
+     *
+     * @param vin                 车架号
+     * @param warehouseCode       目标交付库代码
+     * @param storageAreaCode     储区代码
+     * @param storageLocationCode 储位代码
+     * @param operator            入库者
+     * @param now                 入库时间
+     * @return 影响行数
+     */
+    int confirmInbound(String vin, String warehouseCode, String storageAreaCode, String storageLocationCode,
+                       String operator, Date now);
+
+    /**
      * 同仓移储：条件更新 AVAILABLE 库存储位
      *
      * @param id              库存主键

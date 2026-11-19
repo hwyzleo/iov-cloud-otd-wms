@@ -24,6 +24,10 @@ public final class OrderNumGenerator {
      * 出库单前缀
      */
     public static final String OUTBOUND_PREFIX = "OUT";
+    /**
+     * 待入库任务前缀
+     */
+    public static final String INBOUND_TASK_PREFIX = "IA";
 
     private OrderNumGenerator() {
     }

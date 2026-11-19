@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.mapper.InboundTaskMapper">
+
+    <resultMap id="baseResultMap" type="net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.po.InboundTaskPo">
+        <id column="id" property="id"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="request_id" property="requestId"/>
+        <result column="source_system" property="sourceSystem"/>
+        <result column="source_order_num" property="sourceOrderNum"/>
+        <result column="vin" property="vin"/>
+        <result column="build_config_code" property="buildConfigCode"/>
+        <result column="warehouse_code" property="warehouseCode"/>
+        <result column="state" property="state"/>
+        <result column="estimated_arrival_time" property="estimatedArrivalTime"/>
+        <result column="arrival_time" property="arrivalTime"/>
+        <result column="arrival_by" property="arrivalBy"/>
+        <result column="inbound_time" property="inboundTime"/>
+        <result column="inbound_by" property="inboundBy"/>
+        <result column="cancel_time" property="cancelTime"/>
+        <result column="cancel_by" property="cancelBy"/>
+        <result column="cancel_reason" property="cancelReason"/>
+        <result column="lifecycle_seq" property="lifecycleSeq"/>
+        <result column="aggregate_version" property="aggregateVersion"/>
+        <result column="description" property="description"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="modify_time" property="modifyTime"/>
+        <result column="modify_by" property="modifyBy"/>
+        <result column="row_version" property="rowVersion"/>
+        <result column="row_valid" property="rowValid"/>
+    </resultMap>
+
+    <sql id="baseColumnList">
+        id, order_num, request_id, source_system, source_order_num, vin, build_config_code, warehouse_code, state,
+        estimated_arrival_time, arrival_time, arrival_by, inbound_time, inbound_by, cancel_time, cancel_by,
+        cancel_reason, lifecycle_seq, aggregate_version,
+        description, create_time, create_by, modify_time, modify_by, row_version, row_valid
+    </sql>
+
+    <insert id="insertPo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_inbound_task (
+            order_num, request_id, source_system, source_order_num, vin, build_config_code, warehouse_code, state,
+            estimated_arrival_time, lifecycle_seq, aggregate_version,
+            description, create_time, create_by, modify_time, modify_by, row_version, row_valid
+        )
+        VALUES (
+            #{orderNum}, #{requestId}, #{sourceSystem}, #{sourceOrderNum}, #{vin}, #{buildConfigCode},
+            #{warehouseCode}, #{state}, #{estimatedArrivalTime}, #{lifecycleSeq}, #{aggregateVersion},
+            #{description}, now(), #{createBy}, now(), #{modifyBy}, 1, 1
+        )
+    </insert>
+
+    <select id="selectPoById" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_inbound_task t
+        WHERE t.id = #{value}
+          AND t.row_valid = 1
+    </select>
+
+    <select id="selectPoByOrderNum" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_inbound_task t
+        WHERE t.row_valid = 1
+          AND t.order_num = #{orderNum}
+        LIMIT 1
+    </select>
+
+    <select id="selectPoBySourceRequest" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_inbound_task t
+        WHERE t.row_valid = 1
+          AND t.source_system = #{sourceSystem}
+          AND t.request_id = #{requestId}
+        LIMIT 1
+    </select>
+
+    <select id="selectPoBySourceOrderAndVin" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_inbound_task t
+        WHERE t.row_valid = 1
+          AND t.source_system = #{sourceSystem}
+          AND t.source_order_num = #{sourceOrderNum}
+          AND t.vin = #{vin}
+        LIMIT 1
+    </select>
+
+    <update id="updateStateByVersion">
+        UPDATE tb_inbound_task t SET
+        t.state = #{po.state},
+        t.aggregate_version = #{po.aggregateVersion},
+        t.arrival_time = #{po.arrivalTime},
+        t.arrival_by = #{po.arrivalBy},
+        t.inbound_time = #{po.inboundTime},
+        t.inbound_by = #{po.inboundBy},
+        t.cancel_time = #{po.cancelTime},
+        t.cancel_by = #{po.cancelBy},
+        t.cancel_reason = #{po.cancelReason},
+        t.modify_by = #{po.modifyBy},
+        t.row_version = t.row_version + 1,
+        t.modify_time = now()
+        WHERE t.id = #{po.id}
+          AND t.row_version = #{expectedVersion}
+          AND t.row_valid = 1
+    </update>
+
+    <select id="search" resultMap="baseResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM tb_inbound_task t
+        WHERE t.row_valid = 1
+        <if test="orderNum != null and orderNum != ''">
+            AND t.order_num = #{orderNum}
+        </if>
+        <if test="sourceSystem != null and sourceSystem != ''">
+            AND t.source_system = #{sourceSystem}
+        </if>
+        <if test="sourceOrderNum != null and sourceOrderNum != ''">
+            AND t.source_order_num = #{sourceOrderNum}
+        </if>
+        <if test="warehouseCode != null and warehouseCode != ''">
+            AND t.warehouse_code = #{warehouseCode}
+        </if>
+        <if test="state != null and state != ''">
+            AND t.state = #{state}
+        </if>
+        <if test="vin != null and vin != ''">
+            AND t.vin = #{vin}
+        </if>
+        <if test="beginTime != null">
+            AND date_format(t.create_time,'%Y%m%d') &gt;= date_format(#{beginTime},'%Y%m%d')
+        </if>
+        <if test="endTime != null">
+            AND date_format(t.create_time,'%Y%m%d') &lt;= date_format(#{endTime},'%Y%m%d')
+        </if>
+        ORDER BY t.id DESC
+    </select>
+
+</mapper>

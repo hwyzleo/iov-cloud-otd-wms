@@ -60,7 +60,19 @@ public enum WmsErrorCode implements ErrorCode {
     /**
      * 并发修改或预期版本过期
      */
-    STALE_VERSION("302011", "并发修改或预期版本过期");
+    STALE_VERSION("302011", "并发修改或预期版本过期"),
+    /**
+     * 入库任务状态冲突
+     */
+    INBOUND_TASK_STATE_CONFLICT("302012", "入库任务状态冲突"),
+    /**
+     * 车辆当前状态不可入库
+     */
+    VIN_NOT_INBOUNDABLE("302013", "车辆当前状态不可入库"),
+    /**
+     * 交付库目标仓库缺失或不匹配
+     */
+    INBOUND_WAREHOUSE_INVALID("302014", "交付库目标仓库缺失或层级不匹配");
 
     private final String code;
     private final String message;

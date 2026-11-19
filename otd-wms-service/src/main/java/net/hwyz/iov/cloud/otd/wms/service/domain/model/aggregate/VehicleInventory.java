@@ -60,6 +60,14 @@ public class VehicleInventory {
      */
     private String reservedOrderNum;
     /**
+     * 目标交付库代码（IN_TRANSIT 期间有效）
+     */
+    private String targetWarehouseCode;
+    /**
+     * 已发生的入库段次
+     */
+    private Integer lifecycleSeq;
+    /**
      * 入库时间
      */
     private Date inboundTime;
@@ -139,6 +147,61 @@ public class VehicleInventory {
         }
         this.storageAreaCode = newStorageAreaCode;
         this.storageLocationCode = newStorageLocationCode;
+    }
+
+    /**
+     * 交付库在途：OUTBOUND → IN_TRANSIT，记录目标交付库且不占储位
+     *
+     * @param targetWarehouseCode 目标交付库代码
+     */
+    public void markInTransit(String targetWarehouseCode) {
+        if (state != InventoryState.OUTBOUND) {
+            throw WmsBusinessException.of(WmsErrorCode.VIN_NOT_INBOUNDABLE,
+                    "车辆[" + vin + "]当前状态为[" + state + "]，不可进入待入库");
+        }
+        this.state = InventoryState.IN_TRANSIT;
+        this.targetWarehouseCode = targetWarehouseCode;
+        this.storageAreaCode = null;
+        this.storageLocationCode = null;
+    }
+
+    /**
+     * 待入库取消：IN_TRANSIT → OUTBOUND，清空目标仓库
+     */
+    public void releaseInTransit() {
+        if (state != InventoryState.IN_TRANSIT) {
+            throw WmsBusinessException.of(WmsErrorCode.INBOUND_TASK_STATE_CONFLICT,
+                    "车辆[" + vin + "]当前状态为[" + state + "]，不可取消待入库");
+        }
+        this.state = InventoryState.OUTBOUND;
+        this.targetWarehouseCode = null;
+    }
+
+    /**
+     * 交付库入库：IN_TRANSIT → AVAILABLE，目标仓库转为当前仓库并占用储位
+     *
+     * @param storageAreaCode     储区代码
+     * @param storageLocationCode 储位代码
+     * @param operator            可信操作人
+     * @param now                 WMS 生成的入库时间
+     */
+    public void confirmInbound(String storageAreaCode, String storageLocationCode, String operator, Date now) {
+        if (state != InventoryState.IN_TRANSIT) {
+            throw WmsBusinessException.of(WmsErrorCode.VIN_NOT_INBOUNDABLE,
+                    "车辆[" + vin + "]当前状态为[" + state + "]，不可入库");
+        }
+        if (targetWarehouseCode == null || targetWarehouseCode.isBlank()) {
+            throw WmsBusinessException.of(WmsErrorCode.INBOUND_WAREHOUSE_INVALID,
+                    "车辆[" + vin + "]缺少目标交付库，不可入库");
+        }
+        this.warehouseCode = this.targetWarehouseCode;
+        this.targetWarehouseCode = null;
+        this.storageAreaCode = storageAreaCode;
+        this.storageLocationCode = storageLocationCode;
+        this.state = InventoryState.AVAILABLE;
+        this.inboundTime = now;
+        this.inboundBy = operator;
+        this.lifecycleSeq = this.lifecycleSeq == null ? 1 : this.lifecycleSeq + 1;
     }
 
     private void requireReversedBy(String orderNum) {

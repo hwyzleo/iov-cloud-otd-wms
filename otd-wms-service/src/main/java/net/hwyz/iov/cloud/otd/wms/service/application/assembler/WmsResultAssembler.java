@@ -1,6 +1,7 @@
 package net.hwyz.iov.cloud.otd.wms.service.application.assembler;
 
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InboundOrderDto;
+import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InboundTaskDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InventoryDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InventoryTransferDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.OutboundOrderDetailDto;
@@ -9,6 +10,7 @@ import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.PreInboundOrder
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.StorageAreaDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.StorageLocationDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.WarehouseDto;
+import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.InboundTask;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.OutboundOrder;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.PreInboundOrder;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.VehicleInventory;
@@ -256,5 +258,35 @@ public final class WmsResultAssembler {
 
     public static List<StorageLocationDto> fromStorageLocationList(List<StorageLocationPo> list) {
         return list.stream().map(WmsResultAssembler::fromStorageLocation).toList();
+    }
+
+    public static InboundTaskDto fromInboundTask(InboundTask task) {
+        if (task == null) {
+            return null;
+        }
+        return InboundTaskDto.builder()
+                .id(task.getId())
+                .orderNum(task.getOrderNum())
+                .requestId(task.getRequestId())
+                .sourceSystem(task.getSourceSystem())
+                .sourceOrderNum(task.getSourceOrderNum())
+                .vin(task.getVin())
+                .buildConfigCode(task.getBuildConfigCode())
+                .warehouseCode(task.getWarehouseCode())
+                .state(task.getState() == null ? null : task.getState().name())
+                .estimatedArrivalTime(task.getEstimatedArrivalTime())
+                .arrivalTime(task.getArrivalTime())
+                .inboundTime(task.getInboundTime())
+                .cancelTime(task.getCancelTime())
+                .cancelReason(task.getCancelReason())
+                .lifecycleSeq(task.getLifecycleSeq())
+                .aggregateVersion(task.getAggregateVersion())
+                .rowVersion(task.getRowVersion())
+                .createTime(task.getCreateTime())
+                .build();
+    }
+
+    public static List<InboundTaskDto> fromInboundTaskList(List<InboundTask> list) {
+        return list.stream().map(WmsResultAssembler::fromInboundTask).toList();
     }
 }

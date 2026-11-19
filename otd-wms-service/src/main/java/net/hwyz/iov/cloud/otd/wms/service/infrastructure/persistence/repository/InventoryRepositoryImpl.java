@@ -56,6 +56,23 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     }
 
     @Override
+    public int markInTransit(String vin, String targetWarehouseCode) {
+        return inventoryMapper.markInTransitByVin(vin, targetWarehouseCode);
+    }
+
+    @Override
+    public int releaseInTransit(String vin) {
+        return inventoryMapper.releaseInTransitByVin(vin);
+    }
+
+    @Override
+    public int confirmInbound(String vin, String warehouseCode, String storageAreaCode, String storageLocationCode,
+                              String operator, Date now) {
+        return inventoryMapper.confirmInboundByVin(vin, warehouseCode, storageAreaCode, storageLocationCode,
+                operator, now);
+    }
+
+    @Override
     public int relocate(Long id, String newAreaCode, String newLocationCode, int expectedVersion, String operator) {
         return inventoryMapper.relocateById(id, newAreaCode, newLocationCode, expectedVersion, operator);
     }

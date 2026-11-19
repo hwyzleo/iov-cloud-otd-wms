@@ -1,5 +1,6 @@
 package net.hwyz.iov.cloud.otd.wms.service.adapter.web.assembler;
 
+import net.hwyz.iov.cloud.otd.wms.api.contract.InboundTaskMpt;
 import net.hwyz.iov.cloud.otd.wms.api.contract.InboundOrderMpt;
 import net.hwyz.iov.cloud.otd.wms.api.contract.InventoryCountDetailMpt;
 import net.hwyz.iov.cloud.otd.wms.api.contract.InventoryCountMpt;
@@ -14,6 +15,7 @@ import net.hwyz.iov.cloud.otd.wms.api.contract.WarehouseMpt;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InboundOrderDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InventoryDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InventoryTransferDto;
+import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.InboundTaskDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.OutboundOrderDetailDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.OutboundOrderDto;
 import net.hwyz.iov.cloud.otd.wms.service.application.dto.result.PreInboundOrderDto;
@@ -408,6 +410,32 @@ public final class MptVoAssembler {
                 .actualStorageAreaCode(vo.getActualStorageAreaCode())
                 .actualStorageLocationCode(vo.getActualStorageLocationCode())
                 .countTime(vo.getCountTime())
+                .build();
+    }
+
+    public static InboundTaskMpt fromInboundTask(InboundTaskDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        return InboundTaskMpt.builder()
+                .id(dto.id())
+                .orderNum(dto.orderNum())
+                .requestId(dto.requestId())
+                .sourceSystem(dto.sourceSystem())
+                .sourceOrderNum(dto.sourceOrderNum())
+                .vin(dto.vin())
+                .buildConfigCode(dto.buildConfigCode())
+                .warehouseCode(dto.warehouseCode())
+                .state(dto.state())
+                .estimatedArrivalTime(dto.estimatedArrivalTime())
+                .arrivalTime(dto.arrivalTime())
+                .inboundTime(dto.inboundTime())
+                .cancelTime(dto.cancelTime())
+                .cancelReason(dto.cancelReason())
+                .lifecycleSeq(dto.lifecycleSeq())
+                .aggregateVersion(dto.aggregateVersion())
+                .rowVersion(dto.rowVersion())
+                .createTime(dto.createTime())
                 .build();
     }
 }

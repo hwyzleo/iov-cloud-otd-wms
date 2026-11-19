@@ -26,6 +26,10 @@ class WmsKafkaTopicRoutesTest {
         assertThat(routes.resolve("VehicleOutboundChangedEvent")).isEqualTo("wms.vehicle-outbound.changed");
         assertThat(routes.resolve("VehicleOutboundCommandRejectedEvent"))
                 .isEqualTo("wms.vehicle-outbound.changed");
+        assertThat(routes.resolve("VehicleInboundChangedEvent"))
+                .isEqualTo("wms.vehicle-inbound.changed");
+        assertThat(routes.resolve("VehicleInboundCommandRejectedEvent"))
+                .isEqualTo("wms.vehicle-inbound.changed");
         assertThatThrownBy(() -> routes.resolve("UnknownEvent")).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -35,6 +39,8 @@ class WmsKafkaTopicRoutesTest {
         assertThat(routes.deadLetterTopic("vmd.vehicle-produce")).isEqualTo("vmd.vehicle-produce.wms.dlq");
         assertThat(routes.deadLetterTopic("wms.vehicle-outbound.requested"))
                 .isEqualTo("wms.vehicle-outbound.requested.wms.dlq");
+        assertThat(routes.deadLetterTopic("wms.vehicle-inbound.requested"))
+                .isEqualTo("wms.vehicle-inbound.requested.wms.dlq");
         assertThatThrownBy(() -> routes.deadLetterTopic("unknown.topic"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -49,7 +55,10 @@ class WmsKafkaTopicRoutesTest {
                         "wms.vehicle-outbound.requested",
                         "wms.vehicle-outbound.changed",
                         "vmd.vehicle-produce.wms.dlq",
-                        "wms.vehicle-outbound.requested.wms.dlq")
+                        "wms.vehicle-outbound.requested.wms.dlq",
+                        "wms.vehicle-inbound.requested",
+                        "wms.vehicle-inbound.changed",
+                        "wms.vehicle-inbound.requested.wms.dlq")
                 .doesNotContain("vmd.vehicle-produce");
         assertThat(WmsKafkaLogicalTopic.VEHICLE_PRODUCE.producerOwned()).isFalse();
     }

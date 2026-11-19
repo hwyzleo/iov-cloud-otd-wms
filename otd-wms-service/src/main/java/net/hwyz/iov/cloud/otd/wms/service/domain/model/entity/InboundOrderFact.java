@@ -27,6 +27,10 @@ public class InboundOrderFact {
      */
     private String preOrderNum;
     /**
+     * 本次入库属于该 VIN 第几段
+     */
+    private Integer lifecycleSeq;
+    /**
      * 车架号
      */
     private String vin;

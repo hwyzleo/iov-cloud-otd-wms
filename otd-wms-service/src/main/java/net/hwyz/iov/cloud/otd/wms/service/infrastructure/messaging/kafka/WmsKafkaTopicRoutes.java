@@ -22,7 +22,9 @@ public class WmsKafkaTopicRoutes {
      */
     private static final Map<String, WmsKafkaLogicalTopic> EVENT_TYPE_ROUTES = Map.of(
             "VehicleOutboundChangedEvent", WmsKafkaLogicalTopic.OUTBOUND_CHANGED,
-            "VehicleOutboundCommandRejectedEvent", WmsKafkaLogicalTopic.OUTBOUND_CHANGED
+            "VehicleOutboundCommandRejectedEvent", WmsKafkaLogicalTopic.OUTBOUND_CHANGED,
+            "VehicleInboundChangedEvent", WmsKafkaLogicalTopic.INBOUND_CHANGED,
+            "VehicleInboundCommandRejectedEvent", WmsKafkaLogicalTopic.INBOUND_CHANGED
     );
 
     private final WmsKafkaProperties properties;
@@ -44,6 +46,9 @@ public class WmsKafkaTopicRoutes {
             case OUTBOUND_CHANGED -> properties.getTopics().getOutboundChanged();
             case VEHICLE_PRODUCE_DLQ -> properties.getTopics().getVehicleProduceDlq();
             case OUTBOUND_REQUESTED_DLQ -> properties.getTopics().getOutboundRequestedDlq();
+            case INBOUND_REQUESTED -> properties.getTopics().getInboundRequested();
+            case INBOUND_CHANGED -> properties.getTopics().getInboundChanged();
+            case INBOUND_REQUESTED_DLQ -> properties.getTopics().getInboundRequestedDlq();
         };
     }
 
@@ -84,6 +89,9 @@ public class WmsKafkaTopicRoutes {
         }
         if (properties.getTopics().getOutboundRequested().equals(sourceTopic)) {
             return topicName(WmsKafkaLogicalTopic.OUTBOUND_REQUESTED_DLQ);
+        }
+        if (properties.getTopics().getInboundRequested().equals(sourceTopic)) {
+            return topicName(WmsKafkaLogicalTopic.INBOUND_REQUESTED_DLQ);
         }
         throw new IllegalArgumentException("来源 Topic 未注册死信目的地: " + sourceTopic);
     }

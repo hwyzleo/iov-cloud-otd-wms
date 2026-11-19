@@ -44,9 +44,13 @@ wms:
       outbound-changed: wms.vehicle-outbound.changed
       vehicle-produce-dlq: vmd.vehicle-produce.wms.dlq
       outbound-requested-dlq: wms.vehicle-outbound.requested.wms.dlq
+      inbound-requested: wms.vehicle-inbound.requested
+      inbound-changed: wms.vehicle-inbound.changed
+      inbound-requested-dlq: wms.vehicle-inbound.requested.wms.dlq
     consumer:
       vehicle-produce-group: otd-wms-vehicle-produce
       outbound-command-group: otd-wms-vehicle-outbound-command
+      inbound-command-group: otd-wms-vehicle-inbound-command
       auto-startup: true
       retry:
         max-attempts: 3

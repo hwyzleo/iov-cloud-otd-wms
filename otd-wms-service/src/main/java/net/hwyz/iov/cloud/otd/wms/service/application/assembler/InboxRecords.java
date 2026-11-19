@@ -23,6 +23,10 @@ public final class InboxRecords {
      */
     public static final String OUTBOUND_COMMAND_CONSUMER = "otd-wms-vehicle-outbound-command";
     /**
+     * 到货命令消费者名称
+     */
+    public static final String INBOUND_COMMAND_CONSUMER = "otd-wms-vehicle-inbound-command";
+    /**
      * MPT 业务动作幂等消费者名称
      */
     public static final String MPT_ACTION_CONSUMER = "otd-wms-mpt-action";

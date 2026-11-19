@@ -25,17 +25,19 @@
         <result column="outbound_by" property="outboundBy" />
         <result column="state" property="state" />
         <result column="reserved_order_num" property="reservedOrderNum" />
+        <result column="target_warehouse_code" property="targetWarehouseCode" />
+        <result column="lifecycle_seq" property="lifecycleSeq" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id, vin, build_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, reserved_order_num, 
+        id, vin, build_config_code, warehouse_code, storage_area_code, storage_location_code, inbound_time, inbound_by, outbound_time, outbound_by, state, reserved_order_num, target_warehouse_code, lifecycle_seq, 
         description, create_time, create_by, modify_time, modify_by, row_version, row_valid
     </sql>
 
     <!-- 包含仓库信息 -->
     <sql id="columnListWithWarehouse">
-        t.id, t.vin, t.build_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.storage_area_code, t.storage_location_code, t.inbound_time, t.inbound_by, t.outbound_time, t.outbound_by, t.state, t.reserved_order_num,
+        t.id, t.vin, t.build_config_code, t.warehouse_code, w.name as warehouse_name, w.warehouse_level, t.storage_area_code, t.storage_location_code, t.inbound_time, t.inbound_by, t.outbound_time, t.outbound_by, t.state, t.reserved_order_num, t.target_warehouse_code, t.lifecycle_seq,
         t.description, t.create_time, t.create_by, t.modify_time, t.modify_by, t.row_version, t.row_valid
     </sql>
 
@@ -344,5 +346,49 @@
         FROM tb_inventory t
         WHERE t.row_valid = 1
         <!-- 添加自定义条件 -->
-    </select>
+    </select>    <!-- 进入待入库：OUTBOUND(2) → IN_TRANSIT(4)，记录目标交付库并释放储位 -->
+    <update id="markInTransitByVin">
+        UPDATE tb_inventory t SET
+        t.state = 4,
+        t.target_warehouse_code = #{targetWarehouseCode},
+        t.storage_area_code = NULL,
+        t.storage_location_code = NULL,
+        t.row_version = t.row_version + 1,
+        t.modify_time = now()
+        WHERE t.vin = #{vin}
+        AND t.state = 2
+        AND t.row_valid = 1
+    </update>
+
+    <!-- 取消待入库：IN_TRANSIT(4) → OUTBOUND(2) -->
+    <update id="releaseInTransitByVin">
+        UPDATE tb_inventory t SET
+        t.state = 2,
+        t.target_warehouse_code = NULL,
+        t.row_version = t.row_version + 1,
+        t.modify_time = now()
+        WHERE t.vin = #{vin}
+        AND t.state = 4
+        AND t.row_valid = 1
+    </update>
+
+    <!-- 交付库入库：IN_TRANSIT(4) → AVAILABLE(1)，目标仓库转正并占用储位 -->
+    <update id="confirmInboundByVin">
+        UPDATE tb_inventory t SET
+        t.warehouse_code = #{warehouseCode},
+        t.storage_area_code = #{storageAreaCode},
+        t.storage_location_code = #{storageLocationCode},
+        t.target_warehouse_code = NULL,
+        t.lifecycle_seq = t.lifecycle_seq + 1,
+        t.state = 1,
+        t.inbound_time = #{now},
+        t.inbound_by = #{operator},
+        t.row_version = t.row_version + 1,
+        t.modify_time = now()
+        WHERE t.vin = #{vin}
+        AND t.state = 4
+        AND t.target_warehouse_code = #{warehouseCode}
+        AND t.row_valid = 1
+    </update>
+
 </mapper>

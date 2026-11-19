@@ -30,7 +30,22 @@ public enum WmsKafkaLogicalTopic {
     /**
      * 出库命令消费者专属死信（WMS 拥有）
      */
-    OUTBOUND_REQUESTED_DLQ(true);
+    OUTBOUND_REQUESTED_DLQ(true),
+
+    /**
+     * 通用到货命令（Producer/Consumer，WMS 拥有契约并初始化）
+     */
+    INBOUND_REQUESTED(true),
+
+    /**
+     * WMS 入库事实（Producer，WMS 拥有）
+     */
+    INBOUND_CHANGED(true),
+
+    /**
+     * 到货命令消费者专属死信（WMS 拥有）
+     */
+    INBOUND_REQUESTED_DLQ(true);
 
     private final boolean producerOwned;
 

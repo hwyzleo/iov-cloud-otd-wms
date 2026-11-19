@@ -114,4 +114,16 @@ public class InventoryPo extends BasePo {
      */
     @TableField("reserved_order_num")
     private String reservedOrderNum;
+
+    /**
+     * 目标交付库代码（IN_TRANSIT 期间有效）
+     */
+    @TableField("target_warehouse_code")
+    private String targetWarehouseCode;
+
+    /**
+     * 已发生的入库段次
+     */
+    @TableField("lifecycle_seq")
+    private Integer lifecycleSeq;
 }

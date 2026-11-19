@@ -47,6 +47,12 @@ public class InboundOrderPo extends BasePo {
     private String preOrderNum;
 
     /**
+     * 本次入库属于该 VIN 第几段
+     */
+    @TableField("lifecycle_seq")
+    private Integer lifecycleSeq;
+
+    /**
      * 车架号
      */
     @TableField("vin")

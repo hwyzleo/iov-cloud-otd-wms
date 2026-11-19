@@ -68,6 +68,24 @@ public class WmsKafkaProperties {
          */
         @NotBlank
         private String outboundRequestedDlq = "wms.vehicle-outbound.requested.wms.dlq";
+
+        /**
+         * 通用到货命令 Topic（WMS 拥有契约并初始化）
+         */
+        @NotBlank
+        private String inboundRequested = "wms.vehicle-inbound.requested";
+
+        /**
+         * WMS 入库事实 Topic（WMS 生产并拥有）
+         */
+        @NotBlank
+        private String inboundChanged = "wms.vehicle-inbound.changed";
+
+        /**
+         * 到货命令消费者专属死信
+         */
+        @NotBlank
+        private String inboundRequestedDlq = "wms.vehicle-inbound.requested.wms.dlq";
     }
 
     /**
@@ -87,6 +105,11 @@ public class WmsKafkaProperties {
          */
         @NotBlank
         private String outboundCommandGroup = "otd-wms-vehicle-outbound-command";
+        /**
+         * 到货命令消费组
+         */
+        @NotBlank
+        private String inboundCommandGroup = "otd-wms-vehicle-inbound-command";
 
         /**
          * 是否自动启动消费者

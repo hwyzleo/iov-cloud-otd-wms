@@ -1,11 +1,13 @@
 package net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.converter;
 
 import net.hwyz.iov.cloud.otd.wms.service.common.enums.InboxProcessState;
+import net.hwyz.iov.cloud.otd.wms.service.common.enums.InboundTaskState;
 import net.hwyz.iov.cloud.otd.wms.service.common.enums.InventoryState;
 import net.hwyz.iov.cloud.otd.wms.service.common.enums.OutboundDetailState;
 import net.hwyz.iov.cloud.otd.wms.service.common.enums.OutboundOrderState;
 import net.hwyz.iov.cloud.otd.wms.service.common.enums.OutboxPublishState;
 import net.hwyz.iov.cloud.otd.wms.service.common.enums.PreInboundState;
+import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.InboundTask;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.OutboundOrder;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.PreInboundOrder;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.aggregate.VehicleInventory;
@@ -18,6 +20,7 @@ import net.hwyz.iov.cloud.otd.wms.service.domain.model.valueobject.StorageAreaIn
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.valueobject.StorageLocationInfo;
 import net.hwyz.iov.cloud.otd.wms.service.domain.model.valueobject.WarehouseInfo;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.po.InboundOrderPo;
+import net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.po.InboundTaskPo;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.po.InventoryPo;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.po.InventoryTransferPo;
 import net.hwyz.iov.cloud.otd.wms.service.infrastructure.persistence.po.OutboundOrderDetailPo;
@@ -118,6 +121,8 @@ public final class PersistenceConverter {
                 .storageLocationCode(po.getStorageLocationCode())
                 .state(InventoryState.valOf(po.getState()))
                 .reservedOrderNum(po.getReservedOrderNum())
+                .targetWarehouseCode(po.getTargetWarehouseCode())
+                .lifecycleSeq(po.getLifecycleSeq())
                 .inboundTime(po.getInboundTime())
                 .inboundBy(toOperator(po.getInboundBy()))
                 .outboundTime(po.getOutboundTime())
@@ -140,6 +145,8 @@ public final class PersistenceConverter {
                 .storageLocationCode(inventory.getStorageLocationCode())
                 .state(inventory.getState() == null ? null : inventory.getState().value())
                 .reservedOrderNum(inventory.getReservedOrderNum())
+                .targetWarehouseCode(inventory.getTargetWarehouseCode())
+                .lifecycleSeq(inventory.getLifecycleSeq())
                 .inboundTime(inventory.getInboundTime())
                 .inboundBy(toOperatorId(inventory.getInboundBy()))
                 .outboundTime(inventory.getOutboundTime())
@@ -160,6 +167,7 @@ public final class PersistenceConverter {
                 .id(po.getId())
                 .orderNum(po.getOrderNum())
                 .preOrderNum(po.getPreOrderNum())
+                .lifecycleSeq(po.getLifecycleSeq())
                 .vin(po.getVin())
                 .buildConfigCode(po.getBuildConfigCode())
                 .warehouseCode(po.getWarehouseCode())
@@ -181,6 +189,7 @@ public final class PersistenceConverter {
                 .id(fact.getId())
                 .orderNum(fact.getOrderNum())
                 .preOrderNum(fact.getPreOrderNum())
+                .lifecycleSeq(fact.getLifecycleSeq() == null ? 1 : fact.getLifecycleSeq())
                 .vin(fact.getVin())
                 .buildConfigCode(fact.getBuildConfigCode())
                 .warehouseCode(fact.getWarehouseCode())
@@ -497,5 +506,66 @@ public final class PersistenceConverter {
             return null;
         }
         return Enum.valueOf(type, name);
+    }
+
+    // ---------------- 待入库任务 ----------------
+
+    public static InboundTask toDomain(InboundTaskPo po) {
+        if (po == null) {
+            return null;
+        }
+        return InboundTask.builder()
+                .id(po.getId())
+                .orderNum(po.getOrderNum())
+                .requestId(po.getRequestId())
+                .sourceSystem(po.getSourceSystem())
+                .sourceOrderNum(po.getSourceOrderNum())
+                .vin(po.getVin())
+                .buildConfigCode(po.getBuildConfigCode())
+                .warehouseCode(po.getWarehouseCode())
+                .state(enumOf(InboundTaskState.class, po.getState()))
+                .estimatedArrivalTime(po.getEstimatedArrivalTime())
+                .arrivalTime(po.getArrivalTime())
+                .arrivalBy(toOperator(po.getArrivalBy()))
+                .inboundTime(po.getInboundTime())
+                .inboundBy(toOperator(po.getInboundBy()))
+                .cancelTime(po.getCancelTime())
+                .cancelBy(toOperator(po.getCancelBy()))
+                .cancelReason(po.getCancelReason())
+                .lifecycleSeq(po.getLifecycleSeq())
+                .aggregateVersion(po.getAggregateVersion())
+                .rowVersion(po.getRowVersion())
+                .createTime(po.getCreateTime())
+                .build();
+    }
+
+    public static InboundTaskPo toPo(InboundTask task) {
+        if (task == null) {
+            return null;
+        }
+        InboundTaskPo po = InboundTaskPo.builder()
+                .id(task.getId())
+                .orderNum(task.getOrderNum())
+                .requestId(task.getRequestId())
+                .sourceSystem(task.getSourceSystem())
+                .sourceOrderNum(task.getSourceOrderNum())
+                .vin(task.getVin())
+                .buildConfigCode(task.getBuildConfigCode())
+                .warehouseCode(task.getWarehouseCode())
+                .state(task.getState() == null ? null : task.getState().name())
+                .estimatedArrivalTime(task.getEstimatedArrivalTime())
+                .arrivalTime(task.getArrivalTime())
+                .arrivalBy(toOperatorId(task.getArrivalBy()))
+                .inboundTime(task.getInboundTime())
+                .inboundBy(toOperatorId(task.getInboundBy()))
+                .cancelTime(task.getCancelTime())
+                .cancelBy(toOperatorId(task.getCancelBy()))
+                .cancelReason(task.getCancelReason())
+                .lifecycleSeq(task.getLifecycleSeq())
+                .aggregateVersion(task.getAggregateVersion())
+                .build();
+        po.setRowVersion(task.getRowVersion());
+        applyInsertDefaults(po);
+        return po;
     }
 }

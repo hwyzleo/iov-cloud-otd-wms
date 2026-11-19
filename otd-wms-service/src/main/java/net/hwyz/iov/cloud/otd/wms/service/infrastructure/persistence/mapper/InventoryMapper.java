@@ -67,6 +67,42 @@ public interface InventoryMapper extends BaseDao<InventoryPo, Long> {
                       @Param("operator") String operator, @Param("now") Date now);
 
     /**
+     * 进入待入库：OUTBOUND(2) → IN_TRANSIT(4)，记录目标交付库并释放储位
+     *
+     * @param vin                 车架号
+     * @param targetWarehouseCode 目标交付库代码
+     * @return 影响行数
+     */
+    int markInTransitByVin(@Param("vin") String vin,
+                           @Param("targetWarehouseCode") String targetWarehouseCode);
+
+    /**
+     * 取消待入库：IN_TRANSIT(4) → OUTBOUND(2)
+     *
+     * @param vin 车架号
+     * @return 影响行数
+     */
+    int releaseInTransitByVin(@Param("vin") String vin);
+
+    /**
+     * 交付库入库：IN_TRANSIT(4) → AVAILABLE(1)，目标仓库转正并占用储位
+     *
+     * @param vin                 车架号
+     * @param warehouseCode       目标交付库代码
+     * @param storageAreaCode     储区代码
+     * @param storageLocationCode 储位代码
+     * @param operator            入库者
+     * @param now                 入库时间
+     * @return 影响行数
+     */
+    int confirmInboundByVin(@Param("vin") String vin,
+                            @Param("warehouseCode") String warehouseCode,
+                            @Param("storageAreaCode") String storageAreaCode,
+                            @Param("storageLocationCode") String storageLocationCode,
+                            @Param("operator") String operator,
+                            @Param("now") Date now);
+
+    /**
      * 移储：条件更新 AVAILABLE 库存的储区／储位
      *
      * @param id              主键
